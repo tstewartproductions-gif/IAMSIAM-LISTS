@@ -323,7 +323,7 @@ a:focus-visible,.buy:focus-visible{outline:1px solid var(--fg);outline-offset:2p
 main{flex:1;width:100%;max-width:760px;margin:0 auto;padding:28px 24px 64px}
 
 .list-head{margin-bottom:24px}
-.list-head .curator{font-size:12px;color:var(--meta);letter-spacing:.1em}
+.list-head .curator{font-size:12px;color:var(--meta);letter-spacing:.1em;text-transform:uppercase}
 .list-head h1{font-size:20px;font-weight:600;text-transform:uppercase;letter-spacing:.04em;margin-top:4px}
 .list-head .date{font-size:11px;color:var(--strip);margin-top:4px}
 
@@ -333,13 +333,15 @@ main{flex:1;width:100%;max-width:760px;margin:0 auto;padding:28px 24px 64px}
 }
 
 .track{
-  display:grid;grid-template-columns:34px 1fr auto;gap:6px 14px;
+  display:grid;grid-template-columns:34px 48px 1fr auto;gap:6px 14px;
   padding:16px 0;border-bottom:1px solid var(--border);align-items:start;
 }
 .track .rank{color:var(--strip);font-weight:600}
+.track .art{width:48px;height:48px;border:1px solid var(--border);overflow:hidden}
+.track .art img{width:100%;height:100%;object-fit:cover;display:block}
 .track .name{font-weight:600;text-transform:uppercase;letter-spacing:.02em}
-.track .details{grid-column:2;color:var(--meta);font-size:12px}
-.track .note{grid-column:2;color:var(--strip);font-size:12px;font-style:italic}
+.track .details{grid-column:3;color:var(--meta);font-size:12px}
+.track .note{grid-column:3;color:var(--strip);font-size:12px;font-style:italic}
 .track .actions{display:flex;flex-direction:column;align-items:flex-end;gap:8px}
 .badge{
   font-size:10px;color:var(--meta);border:1px solid var(--border);
@@ -348,13 +350,14 @@ main{flex:1;width:100%;max-width:760px;margin:0 auto;padding:28px 24px 64px}
 .buy{
   font-size:11px;font-weight:600;letter-spacing:.1em;
   border:1px solid var(--fg);padding:6px 12px;white-space:nowrap;
+  text-transform:uppercase;
 }
 .buy:hover{background:var(--fg);color:var(--bg)}
 
 .archive-grid{display:grid;gap:1px;background:var(--border);border:1px solid var(--border)}
 .archive-grid a{background:var(--bg);padding:18px;display:block}
 .archive-grid a:hover{background:var(--hover)}
-.archive-grid .curator{color:var(--meta);font-size:12px;letter-spacing:.1em}
+.archive-grid .curator{color:var(--meta);font-size:12px;letter-spacing:.1em;text-transform:uppercase}
 .archive-grid .title{font-weight:600;text-transform:uppercase;margin-top:2px}
 .archive-grid .date{color:var(--strip);font-size:11px;margin-top:4px}
 
@@ -370,8 +373,9 @@ main{flex:1;width:100%;max-width:760px;margin:0 auto;padding:28px 24px 64px}
 .error-view{color:var(--meta);padding:40px 0}
 
 @media (max-width:520px){
-  .track{grid-template-columns:26px 1fr}
-  .track .actions{grid-column:2;flex-direction:row;align-items:center;margin-top:8px}
+  .track{grid-template-columns:26px 40px 1fr}
+  .track .art{width:40px;height:40px}
+  .track .actions{grid-column:3;flex-direction:row;align-items:center;margin-top:8px}
   .site-head{flex-direction:column;align-items:flex-start;gap:10px}
 }
 ```
@@ -395,14 +399,15 @@ git commit -m "feat: app shell and site stylesheet (studio palette)"
 ```js
 // IAMSIAM_LISTS - hash router + renderers. No deps, no build.
 const app = document.getElementById('app');
-const state = { index: null, lists: {} };
+const state = { seq: 0, index: undefined, lists: Object.create(null), current: null };
 
 const esc = s => String(s ?? '').replace(/[&<>"']/g,
   c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const pad2 = n => String(n).padStart(2, '0');
+const safeUrl = u => /^https?:\/\//i.test(String(u ?? '')) ? String(u) : '';
 
 async function getIndex() {
-  if (!state.index) {
+  if (state.index === undefined) {
     const r = await fetch('index.json');
     if (!r.ok) throw new Error(`index.json ${r.status}`);
     state.index = await r.json();
@@ -411,7 +416,7 @@ async function getIndex() {
 }
 
 async function getList(slug) {
-  if (!state.lists[slug]) {
+  if (!(slug in state.lists)) {
     const r = await fetch(`lists/${encodeURIComponent(slug)}.json`);
     if (!r.ok) throw new Error(`list "${slug}" not found`);
     state.lists[slug] = await r.json();
@@ -419,29 +424,29 @@ async function getList(slug) {
   return state.lists[slug];
 }
 
-function buyLabel(buy) {
-  return `BUY ON ${esc(buy.platform).toUpperCase()}`;
-}
-
 function trackRow(t) {
   const buy = t.buy?.[0];
+  const buyHref = buy ? safeUrl(buy.url) : '';
   return `
-  <article class="track">
-    <span class="rank">${pad2(t.rank)}</span>
+  <article class="track" data-rank="${esc(t.rank)}">
+    <span class="rank">${esc(pad2(t.rank))}</span>
+    <span class="art">${t.art ? `<img src="${esc(t.art)}" loading="lazy" alt="">` : ''}</span>
     <span class="name">${esc(t.artist)} — ${esc(t.title)}</span>
     <span class="actions">
-      <span class="badge">${esc(t.stream ? t.stream.type : 'unreleased')}</span>
-      ${buy ? `<a class="buy" href="${esc(buy.url)}" target="_blank" rel="noopener">${buyLabel(buy)}</a>` : ''}
+      <span class="badge">${esc(t.stream?.type || 'unreleased')}</span>
+      ${buyHref ? `<a class="buy" href="${esc(buyHref)}" target="_blank" rel="noopener">BUY ON ${esc(buy.platform)}</a>` : ''}
     </span>
     ${t.details ? `<span class="details">${esc(t.details)}</span>` : ''}
     ${t.note ? `<span class="note">${esc(t.note)}</span>` : ''}
   </article>`;
 }
 
-function renderList(list) {
+function listView(list) {
+  if (!list || !Array.isArray(list.tracks)) throw new Error('malformed list');
+  state.current = list;
   let html = `
   <div class="list-head">
-    <div class="curator">CURATED BY ${esc(list.curator).toUpperCase()}</div>
+    <div class="curator">CURATED BY ${esc(list.curator)}</div>
     <h1>${esc(list.listTitle)}</h1>
     <div class="date">${esc(list.date)}</div>
   </div>`;
@@ -453,46 +458,54 @@ function renderList(list) {
     }
     html += trackRow(t);
   }
-  app.innerHTML = html;
+  return { html, title: `IAMSIAM LISTS · ${list.listTitle}` };
 }
 
-async function renderHome() {
+async function homeView() {
   const index = await getIndex();
-  const latest = [...index].sort((a, b) => b.date.localeCompare(a.date))[0];
-  renderList(await getList(latest.slug));
+  const latest = Array.isArray(index) ? [...index].sort((a, b) => String(b.date).localeCompare(String(a.date)))[0] : null;
+  if (!latest) return { html: `<div class="error-view">NO LISTS YET</div>`, title: 'IAMSIAM LISTS' };
+  return listView(await getList(latest.slug));
 }
 
-async function renderArchive() {
+async function archiveView() {
   const index = await getIndex();
-  const items = [...index].sort((a, b) => b.date.localeCompare(a.date)).map(e => `
+  const items = (Array.isArray(index) ? [...index] : []).sort((a, b) => String(b.date).localeCompare(String(a.date))).map(e => `
     <a href="#/list/${esc(e.slug)}">
-      <div class="curator">${esc(e.curator).toUpperCase()}</div>
+      <div class="curator">${esc(e.curator)}</div>
       <div class="title">${esc(e.listTitle)}</div>
       <div class="date">${esc(e.date)}</div>
     </a>`).join('');
-  app.innerHTML = `<div class="archive-grid">${items}</div>`;
+  if (!items) return { html: `<div class="error-view">NO LISTS YET</div>`, title: 'IAMSIAM LISTS · ARCHIVE' };
+  return { html: `<div class="archive-grid">${items}</div>`, title: 'IAMSIAM LISTS · ARCHIVE' };
 }
 
-function renderAbout() {
-  app.innerHTML = `
+function aboutView() {
+  return { title: 'IAMSIAM LISTS · ABOUT', html: `
   <div class="about">
     <p>IAMSIAM LISTS is a weekly collection of music recommendations, curated by friends and family of the IAMSIAM label.</p>
     <p>Every week a different artist or friend of the label shares a top 10 of their liking. Listen here, and if something moves you, buy it — every track links to the store that supports the artist most directly.</p>
     <p><a href="https://www.instagram.com/_iamsiam_/" target="_blank" rel="noopener">INSTAGRAM</a> · <a href="https://iamsiam.bandcamp.com" target="_blank" rel="noopener">BANDCAMP</a></p>
-  </div>`;
+  </div>` };
 }
 
 async function route() {
+  const seq = ++state.seq;
   const hash = location.hash.replace(/^#\/?/, '');
+  let view;
   try {
-    if (hash === '') await renderHome();
-    else if (hash === 'archive') await renderArchive();
-    else if (hash === 'about') renderAbout();
-    else if (hash.startsWith('list/')) renderList(await getList(hash.slice(5)));
-    else await renderHome();
+    if (hash === '') view = await homeView();
+    else if (hash === 'archive') view = await archiveView();
+    else if (hash === 'about') view = aboutView();
+    else if (hash.startsWith('list/')) view = listView(await getList(decodeURIComponent(hash.slice(5))));
+    else view = await homeView();
   } catch (err) {
-    app.innerHTML = `<div class="error-view">COULDN'T LOAD THAT — ${esc(err.message)}</div>`;
+    console.error(err);
+    view = { html: `<div class="error-view">COULDN'T LOAD THAT</div>`, title: 'IAMSIAM LISTS' };
   }
+  if (seq !== state.seq) return;
+  app.innerHTML = view.html;
+  document.title = view.title;
   window.scrollTo(0, 0);
 }
 
@@ -512,6 +525,8 @@ Create a temporary `index.json` + `lists/` entry using the `good()` fixture shap
 git add js/app.js
 git commit -m "feat: hash router and list/archive/about renderers"
 ```
+
+**Task 4 amendments (adopted 2026-09-01 after quality review, code blocks above re-synced from committed files):** renderer hardened - every sink escaped (incl. rank, which had a live XSS), https-only allowlist on buy hrefs, route-token guard against re-entrant renders, graceful NO LISTS YET empty states, generic error copy (detail to console), per-route document.title, prototype-safe list cache, artwork thumbnails (48px, per DESIGN's M1 artwork promise), uppercasing moved to CSS. The em-dash artist — title separator is kept deliberately: it mirrors the studio tool's info layer.
 
 ---
 
