@@ -85,12 +85,12 @@ export function validateList(list) {
     } else if (t.buy.length === 0) {
       warnings.push(`${at}: no buy source`);
     } else {
-      for (const b of t.buy) {
+      for (const [bi, b] of t.buy.entries()) {
         // Non-object buy entries (null, arrays, primitives) fall through to {} so
         // property access never throws - they just fail the platform/url check below.
         const bp = (b && typeof b === 'object' && !Array.isArray(b)) ? b : {};
         if (!isText(bp.platform) || !isUrl(bp.url))
-          errors.push(`${at}: buy entry needs platform + http(s) url`);
+          errors.push(`${at}: buy entry ${bi + 1}: needs platform + http(s) url`);
       }
     }
 
@@ -117,7 +117,10 @@ export function validateIndexEntry(entry, list) {
 
   if (list) {
     for (const k of ['date', 'curator', 'listTitle']) {
-      if (entry?.[k] !== undefined && list?.[k] !== undefined && entry[k] !== list[k])
+      // Null-inclusive presence check on both sides: a null/missing field is
+      // already reported above, so it shouldn't also produce a confusing
+      // "does not match ... null" drift error.
+      if (entry?.[k] != null && list?.[k] != null && entry[k] !== list[k])
         errors.push(`${k} does not match list file (index: "${entry[k]}", list: "${list[k]}")`);
     }
   }
@@ -132,41 +135,67 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
     : path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 
   let failed = false;
-  let errorCount = 0, warningCount = 0;
+  let errorCount = 0, warningCount = 0, entryCount = 0;
 
   const warn = (slug, msg) => { console.warn(`  ⚠ ${slug}: ${msg}`); warningCount++; };
   const err = (slug, msg) => { console.error(`✗ ${slug}: ${msg}`); failed = true; errorCount++; };
 
-  let index;
+  // index stays null unless index.json both parses AND is an array - anything
+  // else (missing file, invalid JSON, or valid JSON that isn't an array, e.g.
+  // null/false/0/""/an object) must fail the gate instead of silently no-op'ing.
+  let index = null;
   try {
-    index = JSON.parse(readFileSync(path.join(root, 'index.json'), 'utf8'));
+    const parsed = JSON.parse(readFileSync(path.join(root, 'index.json'), 'utf8'));
+    if (Array.isArray(parsed)) index = parsed;
+    else err('index.json', 'must be an array of entries');
   } catch (e) {
-    console.error(`✗ index.json: ${e.message}`);
-    process.exitCode = 1;
-    index = null;
+    err('index.json', e.message);
   }
 
   if (index) {
+    entryCount = index.length;
+
+    const slugCounts = new Map();
+    for (const entry of index) {
+      const s = entry?.slug;
+      if (typeof s === 'string') slugCounts.set(s, (slugCounts.get(s) ?? 0) + 1);
+    }
+
     for (const entry of index) {
       const slug = entry?.slug ?? '(unknown slug)';
+
+      if (typeof entry?.slug === 'string' && slugCounts.get(entry.slug) > 1)
+        err(slug, `duplicate slug in index.json (${slugCounts.get(entry.slug)} entries)`);
+
       const file = path.join(root, 'lists', `${slug}.json`);
 
       let list;
+      let listLoaded = false; // tracks parse success, not truthiness of the parsed value
       if (!existsSync(file)) {
         err('index.json', `lists/${slug}.json missing`);
       } else {
         try {
           list = JSON.parse(readFileSync(file, 'utf8'));
+          listLoaded = true;
         } catch (e) {
           err(slug, `invalid JSON - ${e.message}`);
         }
       }
 
-      const ie = validateIndexEntry(entry, list);
+      // A list file can parse successfully to JSON that isn't a usable object
+      // (null, false, 0, "", an array, ...) - validateList tolerates that input
+      // without throwing, but the CLI should surface one clear error instead of
+      // either crashing or silently treating it as "nothing to validate".
+      if (listLoaded && (list === null || typeof list !== 'object' || Array.isArray(list))) {
+        err(slug, 'list file must be a JSON object');
+        listLoaded = false;
+      }
+
+      const ie = validateIndexEntry(entry, listLoaded ? list : undefined);
       for (const w of ie.warnings) warn(slug, w);
       for (const e of ie.errors) err(slug, e);
 
-      if (!list) continue; // file missing or failed to parse - nothing more to check
+      if (!listLoaded) continue; // missing, invalid JSON, or wrong shape - nothing more to check
 
       const { errors, warnings } = validateList(list);
       for (const w of warnings) warn(slug, w);
@@ -190,8 +219,11 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
       for (const f of readdirSync(listsDir))
         if (f.endsWith('.json') && !listed.has(f)) { console.warn(`  ⚠ lists/${f} not in index.json`); warningCount++; }
     }
-
-    console.log(`${index.length} lists, ${errorCount} errors, ${warningCount} warnings`);
-    process.exitCode = failed ? 1 : 0;
   }
+
+  // Always run, regardless of whether index.json itself was usable - a broken
+  // gate must still report clearly and exit non-zero rather than silently no-op.
+  if (process.env.LISTS_ROOT) console.log(`root: ${root}`);
+  console.log(`${entryCount} entries, ${errorCount} errors, ${warningCount} warnings`);
+  process.exitCode = failed ? 1 : 0;
 }

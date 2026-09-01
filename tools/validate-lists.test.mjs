@@ -93,8 +93,18 @@ test('missing buy is an error', () => {
 test('non-http url is an error', () => {
   const l = good(); l.tracks[0].buy[0].url = 'ftp://nope';
   const r = validateList(l);
-  assert.deepEqual(r.errors, ['track 1: buy entry needs platform + http(s) url']);
+  assert.deepEqual(r.errors, ['track 1: buy entry 1: needs platform + http(s) url']);
   assert.deepEqual(r.warnings, ['track 1: no artwork']);
+});
+
+test('a second bad buy entry is numbered in its own message', () => {
+  const l = good();
+  l.tracks[0].buy = [
+    { platform: 'bandcamp', url: 'https://africahitech.bandcamp.com/track/x' },
+    { platform: 'bandcamp', url: 'ftp://nope' }
+  ];
+  const r = validateList(l);
+  assert.deepEqual(r.errors, ['track 1: buy entry 2: needs platform + http(s) url']);
 });
 
 // --- malformed containers must never throw ---
@@ -123,7 +133,7 @@ test('a non-array buy does not throw and is an error', () => {
 test('a buy entry that is not an object does not throw and is an error', () => {
   const l = good(); l.tracks[0].buy = [null];
   assert.doesNotThrow(() => validateList(l));
-  assert.match(validateList(l).errors.join(' '), /buy entry needs platform/);
+  assert.match(validateList(l).errors.join(' '), /buy entry 1: needs platform/);
 });
 
 // --- rank ---
@@ -193,54 +203,132 @@ test('validateIndexEntry: malformed date value errors like list dates', () => {
   assert.match(validateIndexEntry(entry).errors.join(' '), /date must be YYYY-MM-DD/);
 });
 
+test('validateIndexEntry: entry.date = null reports only "missing date", not a drift error', () => {
+  const list = good();
+  const entry = { slug: 'top-10-jungle', date: null, curator: list.curator, listTitle: list.listTitle };
+  assert.deepEqual(validateIndexEntry(entry, list).errors, ['missing date']);
+});
+
 // --- CLI (subprocess, LISTS_ROOT-overridable, fixtures under os.tmpdir()) ---
 
 const CLI_PATH = fileURLToPath(new URL('./validate-lists.mjs', import.meta.url));
 
-function buildFixtureTree(trackOverrides = {}) {
+const VALID_TRACK = {
+  rank: 1,
+  artist: 'Africa Hitech',
+  title: 'Out In The Streets (VIP)',
+  details: 'warp · 2011 · 170 BPM',
+  stream: { type: 'bandcamp', url: 'https://africahitech.bandcamp.com/track/x' },
+  buy: [{ platform: 'bandcamp', url: 'https://africahitech.bandcamp.com/track/x' }]
+};
+
+function validListJson(trackOverrides = {}) {
+  return JSON.stringify({
+    curator: 'machinedrum',
+    listTitle: 'top 10 jungle collaborations',
+    date: '2026-08-24',
+    tracks: [{ ...VALID_TRACK, ...trackOverrides }]
+  });
+}
+
+function indexEntryFor(slug) {
+  return { slug, date: '2026-08-24', curator: 'machinedrum', listTitle: 'top 10 jungle collaborations' };
+}
+
+function mkTreeDir() {
   const dir = mkdtempSync(path.join(tmpdir(), 'iamsiam-lists-'));
   mkdirSync(path.join(dir, 'lists'));
-  writeFileSync(
-    path.join(dir, 'index.json'),
-    JSON.stringify([{ slug: 'test', date: '2026-08-24', curator: 'machinedrum', listTitle: 'top 10 jungle collaborations' }])
-  );
-  writeFileSync(
-    path.join(dir, 'lists', 'test.json'),
-    JSON.stringify({
-      curator: 'machinedrum',
-      listTitle: 'top 10 jungle collaborations',
-      date: '2026-08-24',
-      tracks: [{
-        rank: 1,
-        artist: 'Africa Hitech',
-        title: 'Out In The Streets (VIP)',
-        details: 'warp · 2011 · 170 BPM',
-        stream: { type: 'bandcamp', url: 'https://africahitech.bandcamp.com/track/x' },
-        buy: [{ platform: 'bandcamp', url: 'https://africahitech.bandcamp.com/track/x' }],
-        ...trackOverrides
-      }]
-    })
-  );
   return dir;
+}
+
+function buildFixtureTree(trackOverrides = {}) {
+  const dir = mkTreeDir();
+  writeFileSync(path.join(dir, 'index.json'), JSON.stringify([indexEntryFor('test')]));
+  writeFileSync(path.join(dir, 'lists', 'test.json'), validListJson(trackOverrides));
+  return dir;
+}
+
+function runCli(dir) {
+  return spawnSync(process.execPath, [CLI_PATH], { env: { ...process.env, LISTS_ROOT: dir }, encoding: 'utf8' });
 }
 
 test('CLI: exits 0 on a valid tree and 1 on a broken tree (missing artist), via LISTS_ROOT', () => {
   const goodDir = buildFixtureTree();
   const brokenDir = buildFixtureTree({ artist: undefined });
   try {
-    const rGood = spawnSync(process.execPath, [CLI_PATH], {
-      env: { ...process.env, LISTS_ROOT: goodDir },
-      encoding: 'utf8'
-    });
+    const rGood = runCli(goodDir);
     assert.equal(rGood.status, 0, rGood.stdout + rGood.stderr);
+    assert.match(rGood.stdout, /root: /); // LISTS_ROOT override is noted in the output
 
-    const rBroken = spawnSync(process.execPath, [CLI_PATH], {
-      env: { ...process.env, LISTS_ROOT: brokenDir },
-      encoding: 'utf8'
-    });
+    const rBroken = runCli(brokenDir);
     assert.equal(rBroken.status, 1, rBroken.stdout + rBroken.stderr);
   } finally {
     rmSync(goodDir, { recursive: true, force: true });
     rmSync(brokenDir, { recursive: true, force: true });
+  }
+});
+
+test('CLI: a list file that is not a JSON object (null) exits 1 with a clear message', () => {
+  const dir = buildFixtureTree();
+  writeFileSync(path.join(dir, 'lists', 'test.json'), 'null');
+  try {
+    const r = runCli(dir);
+    assert.equal(r.status, 1, r.stdout + r.stderr);
+    assert.match(r.stderr, /test: list file must be a JSON object/);
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test('CLI: index.json containing null exits 1', () => {
+  const dir = mkTreeDir();
+  writeFileSync(path.join(dir, 'index.json'), 'null');
+  try {
+    const r = runCli(dir);
+    assert.equal(r.status, 1, r.stdout + r.stderr);
+    assert.match(r.stderr, /index\.json: must be an array of entries/);
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test('CLI: index.json as a non-array object exits 1 without a stack trace', () => {
+  const dir = mkTreeDir();
+  writeFileSync(path.join(dir, 'index.json'), JSON.stringify({ oops: true }));
+  try {
+    const r = runCli(dir);
+    assert.equal(r.status, 1, r.stdout + r.stderr);
+    assert.match(r.stderr, /index\.json: must be an array of entries/);
+    assert.ok(!r.stderr.includes('.mjs:'), `stderr looked like a stack trace:\n${r.stderr}`);
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test('CLI: a malformed-JSON list does not abort the run; other lists still validate', () => {
+  const dir = mkTreeDir();
+  writeFileSync(path.join(dir, 'index.json'), JSON.stringify([indexEntryFor('broken'), indexEntryFor('fine')]));
+  writeFileSync(path.join(dir, 'lists', 'broken.json'), '{ not valid json');
+  writeFileSync(path.join(dir, 'lists', 'fine.json'), validListJson());
+  try {
+    const r = runCli(dir);
+    assert.equal(r.status, 1, r.stdout + r.stderr);
+    assert.match(r.stdout, /✓ fine/);
+    assert.match(r.stderr, /broken: invalid JSON/);
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test('CLI: duplicate slugs in index.json exits 1', () => {
+  const dir = mkTreeDir();
+  writeFileSync(path.join(dir, 'index.json'), JSON.stringify([indexEntryFor('dupe'), indexEntryFor('dupe')]));
+  writeFileSync(path.join(dir, 'lists', 'dupe.json'), validListJson());
+  try {
+    const r = runCli(dir);
+    assert.equal(r.status, 1, r.stdout + r.stderr);
+    assert.match(r.stderr, /duplicate slug/);
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
   }
 });
