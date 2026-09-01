@@ -276,7 +276,7 @@ git commit -m "feat: list schema validator with tests"
 <p class="intro-strip">INTRODUCING IAMSIAM LISTS : A WEEKLY COLLECTION OF MUSIC RECOMMENDATIONS, CURATED BY FRIENDS AND FAMILY</p>
 <main id="app" aria-live="polite"></main>
 <footer class="site-foot">
-  <a href="https://www.instagram.com/iamsiam/" target="_blank" rel="noopener">INSTAGRAM</a>
+  <a href="https://www.instagram.com/_iamsiam_/" target="_blank" rel="noopener">INSTAGRAM</a>
   <a href="https://iamsiam.bandcamp.com" target="_blank" rel="noopener">BANDCAMP</a>
 </footer>
 <script type="module" src="js/app.js"></script>
@@ -284,7 +284,7 @@ git commit -m "feat: list schema validator with tests"
 </html>
 ```
 
-(Instagram href: correct it to the confirmed URL from Task 1 inputs.)
+(Instagram URL verified 2026-09-01: `_iamsiam_` is linked from the iamsiam.bandcamp.com sidebar.)
 
 - [ ] **Step 2: Write `css/site.css`**
 
@@ -428,7 +428,7 @@ function trackRow(t) {
     <span class="rank">${pad2(t.rank)}</span>
     <span class="name">${esc(t.artist)} — ${esc(t.title)}</span>
     <span class="actions">
-      <span class="badge">${esc(t.stream?.type ?? 'other')}</span>
+      <span class="badge">${esc(t.stream ? t.stream.type : 'unreleased')}</span>
       ${buy ? `<a class="buy" href="${esc(buy.url)}" target="_blank" rel="noopener">${buyLabel(buy)}</a>` : ''}
     </span>
     ${t.details ? `<span class="details">${esc(t.details)}</span>` : ''}
@@ -476,7 +476,7 @@ function renderAbout() {
   <div class="about">
     <p>IAMSIAM LISTS is a weekly collection of music recommendations, curated by friends and family of the IAMSIAM label.</p>
     <p>Every week a different artist or friend of the label shares a top 10 of their liking. Listen here, and if something moves you, buy it — every track links to the store that supports the artist most directly.</p>
-    <p><a href="https://www.instagram.com/iamsiam/" target="_blank" rel="noopener">INSTAGRAM</a> · <a href="https://iamsiam.bandcamp.com" target="_blank" rel="noopener">BANDCAMP</a></p>
+    <p><a href="https://www.instagram.com/_iamsiam_/" target="_blank" rel="noopener">INSTAGRAM</a> · <a href="https://iamsiam.bandcamp.com" target="_blank" rel="noopener">BANDCAMP</a></p>
   </div>`;
 }
 
@@ -498,7 +498,7 @@ addEventListener('hashchange', route);
 route();
 ```
 
-(Instagram href here too - correct to the confirmed URL.)
+(Badge shows `unreleased` when `stream` is absent, per the Task 2 amendments; a track with empty `buy` renders no buy button - the existing guard covers it.)
 
 - [ ] **Step 2: Smoke-check with placeholder data, then remove it**
 
