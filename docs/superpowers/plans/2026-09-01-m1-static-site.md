@@ -236,6 +236,11 @@ git add tools/
 git commit -m "feat: list schema validator with tests"
 ```
 
+**Task 2 amendments (adopted 2026-09-01 after quality review + real data):**
+- Real data surfaced tracks with NO legitimate buy source (dubplates, video-only freestyles): empty `buy` array is now a WARNING, not an error (missing/non-array `buy` stays an error). DESIGN.md updated to match.
+- Real data also surfaced a track with NO public stream at all (PRISM x Wheez-ie "Battalion Edit", private dubplate): `stream` may be absent → WARNING; renderer shows an UNRELEASED badge and the player (M2) skips such tracks. DESIGN.md updated to match.
+- Quality-review fixes adopted: new exported `validateIndexEntry(entry, list)` (slug format `^[a-z0-9-]+$`, date/curator/listTitle present and matching the list file - index.json drives the home page sort and archive tiles, so it must be validated); malformed containers/elements return errors instead of throwing; `isText` (non-blank string) checks for curator/listTitle/artist/title/platform; rank must be integer >= 1 and unique per list; date round-trip check (rejects 2026-13-45); type-error messages say "must be", "missing" reserved for absent fields; CLI wraps JSON reads in try/catch (clean ✗ lines, keeps validating other lists), warns when referenced `art`/`envelope` files don't exist, prints a summary line, uses `process.exitCode`; one spawned CLI test over a tmpdir fixture tree (exit 0 good / 1 broken).
+
 ---
 
 ### Task 3: App shell + stylesheet
