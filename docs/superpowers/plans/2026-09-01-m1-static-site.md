@@ -274,7 +274,7 @@ git commit -m "feat: list schema validator with tests"
   </nav>
 </header>
 <p class="intro-strip">INTRODUCING IAMSIAM LISTS : A WEEKLY COLLECTION OF MUSIC RECOMMENDATIONS, CURATED BY FRIENDS AND FAMILY</p>
-<main id="app" aria-live="polite"></main>
+<main id="app"></main>
 <footer class="site-foot">
   <a href="https://www.instagram.com/_iamsiam_/" target="_blank" rel="noopener">INSTAGRAM</a>
   <a href="https://iamsiam.bandcamp.com" target="_blank" rel="noopener">BANDCAMP</a>
@@ -292,7 +292,8 @@ Palette comes from the studio tool defaults: title `#ffffff`, meta `#8f8f88`, st
 
 ```css
 :root{
-  --bg:#000; --fg:#fff; --meta:#8f8f88; --strip:#6b6b66; --border:#2c2c2a;
+  color-scheme:dark;
+  --bg:#000; --fg:#fff; --meta:#8f8f88; --strip:#7d7d78; --border:#2c2c2a; --hover:#0d0d0d;
   --mono:'IBM Plex Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
 }
 *{box-sizing:border-box;margin:0;padding:0}
@@ -303,6 +304,7 @@ body{
   display:flex;flex-direction:column;
 }
 a{color:inherit;text-decoration:none}
+a:focus-visible,.buy:focus-visible{outline:1px solid var(--fg);outline-offset:2px}
 
 .site-head{
   display:flex;align-items:center;justify-content:space-between;gap:16px;
@@ -351,7 +353,7 @@ main{flex:1;width:100%;max-width:760px;margin:0 auto;padding:28px 24px 64px}
 
 .archive-grid{display:grid;gap:1px;background:var(--border);border:1px solid var(--border)}
 .archive-grid a{background:var(--bg);padding:18px;display:block}
-.archive-grid a:hover{background:#0d0d0d}
+.archive-grid a:hover{background:var(--hover)}
 .archive-grid .curator{color:var(--meta);font-size:12px;letter-spacing:.1em}
 .archive-grid .title{font-weight:600;text-transform:uppercase;margin-top:2px}
 .archive-grid .date{color:var(--strip);font-size:11px;margin-top:4px}
