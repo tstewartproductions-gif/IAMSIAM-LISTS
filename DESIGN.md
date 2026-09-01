@@ -127,6 +127,13 @@ Single-page app (`index.html`) with hash routing (`#/`, `#/archive`, `#/about`, 
 - **M4 - Weekly pipeline.** `/add-list` skill + validator, exercised end to end on a real or dress-rehearsal list.
 - **M5 - Launch polish.** Archive + about views, mobile pass, per-track share links if trivial, optional custom domain.
 
+## Play metrics (do plays here count on the source platform?)
+
+- **YouTube: yes.** Official IFrame player = normal embedded views (view count, watch time, monetization all intact).
+- **SoundCloud: yes.** Official widget plays register in the track's play count and artist stats.
+- **Bandcamp: no in unified-player mode.** Direct mp3-128 playback skips the official player's tracking calls, so listens won't appear in the artist's private dashboard stats. Bandcamp has no public play counts and pays no streaming royalties, so nothing monetary is lost - purchases (which the site drives) are the metric that matters there. Embed-fallback plays do count. Per-track opt-out: flag a track to use the official embed if a curator wants their Bandcamp plays counted.
+- The site can add its own lightweight, privacy-friendly play counter post-launch if IAMSIAM wants first-party listen metrics.
+
 ## Risks / honest notes
 
 - **Bandcamp resolver is unofficial** (see ToS note above). Fallback path exists and is tested as part of M2.
