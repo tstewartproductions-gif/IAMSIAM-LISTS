@@ -6,6 +6,7 @@ const esc = s => String(s ?? '').replace(/[&<>"']/g,
   c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const pad2 = n => String(n).padStart(2, '0');
 const safeUrl = u => /^https?:\/\//i.test(String(u ?? '')) ? String(u) : '';
+const safeArt = p => /^[\w][\w./-]*$/.test(String(p ?? '')) && !String(p).includes('//') ? String(p) : '';
 
 async function getIndex() {
   if (state.index === undefined) {
@@ -31,7 +32,7 @@ function trackRow(t) {
   return `
   <article class="track" data-rank="${esc(t.rank)}">
     <span class="rank">${esc(pad2(t.rank))}</span>
-    <span class="art">${t.art ? `<img src="${esc(t.art)}" loading="lazy" alt="">` : ''}</span>
+    <span class="art">${safeArt(t.art) ? `<img src="${esc(safeArt(t.art))}" loading="lazy" alt="">` : ''}</span>
     <span class="name">${esc(t.artist)} — ${esc(t.title)}</span>
     <span class="actions">
       <span class="badge">${esc(t.stream?.type || 'unreleased')}</span>
@@ -44,7 +45,6 @@ function trackRow(t) {
 
 function listView(list) {
   if (!list || !Array.isArray(list.tracks)) throw new Error('malformed list');
-  state.current = list;
   let html = `
   <div class="list-head">
     <div class="curator">CURATED BY ${esc(list.curator)}</div>
@@ -59,11 +59,12 @@ function listView(list) {
     }
     html += trackRow(t);
   }
-  return { html, title: `IAMSIAM LISTS · ${list.listTitle}` };
+  return { html, title: `IAMSIAM LISTS · ${list.listTitle}`, list };
 }
 
 async function homeView() {
   const index = await getIndex();
+  if (!Array.isArray(index)) console.error('index.json: expected an array');
   const latest = Array.isArray(index) ? [...index].sort((a, b) => String(b.date).localeCompare(String(a.date)))[0] : null;
   if (!latest) return { html: `<div class="error-view">NO LISTS YET</div>`, title: 'IAMSIAM LISTS' };
   return listView(await getList(latest.slug));
@@ -71,6 +72,7 @@ async function homeView() {
 
 async function archiveView() {
   const index = await getIndex();
+  if (!Array.isArray(index)) console.error('index.json: expected an array');
   const items = (Array.isArray(index) ? [...index] : []).sort((a, b) => String(b.date).localeCompare(String(a.date))).map(e => `
     <a href="#/list/${esc(e.slug)}">
       <div class="curator">${esc(e.curator)}</div>
@@ -105,6 +107,7 @@ async function route() {
     view = { html: `<div class="error-view">COULDN'T LOAD THAT</div>`, title: 'IAMSIAM LISTS' };
   }
   if (seq !== state.seq) return;
+  state.current = view.list ?? null;
   app.innerHTML = view.html;
   document.title = view.title;
   window.scrollTo(0, 0);
