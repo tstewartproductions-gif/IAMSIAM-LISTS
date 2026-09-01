@@ -162,7 +162,7 @@ test('missing details is only a warning', () => {
 
 - [ ] **Step 2: Run tests to verify they fail**
 
-Run: `node --test tools/`
+Run: `node --test tools/*.test.mjs`
 Expected: FAIL - cannot find module `./validate-lists.mjs`.
 
 - [ ] **Step 3: Write the validator**
@@ -226,7 +226,7 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
 
 - [ ] **Step 4: Run tests to verify they pass**
 
-Run: `node --test tools/`
+Run: `node --test tools/*.test.mjs`
 Expected: 7 pass, 0 fail.
 
 - [ ] **Step 5: Commit**
