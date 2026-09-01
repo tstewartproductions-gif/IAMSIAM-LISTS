@@ -42,7 +42,7 @@ One file per week: `lists/YYYY-MM-DD-curator.json`
       "rank": 1,
       "artist": "Africa Hitech",
       "title": "Out In The Streets (VIP)",
-      "details": "warp · 2011 · 170 BPM · 3:40",
+      "details": "warp · 2011 · 3:40",
       "note": "optional curator note about this track",
       "art": "art/2026-08-24/01.jpg",
       "stream": { "type": "bandcamp", "url": "https://..." },
@@ -99,7 +99,7 @@ A project skill checked into the repo (`.claude/skills/add-list/`) so any future
 Steps the session performs:
 1. For each track, search **Bandcamp first** (site search, label/artist pages), then **Beatport**, then SoundCloud/YouTube/elsewhere. Agent search handles fuzzy matching (white labels, VIPs, unreleased edits) that scripted lookups fail on.
 2. Apply priority rules (stream: Bandcamp → SoundCloud/YouTube → other; buy: Bandcamp → Beatport → other).
-3. Fetch artwork and metadata (year, label; BPM/key from Beatport when listed, otherwise from the curator's info).
+3. Fetch artwork and metadata (year, label, length). Details line format: `label · year · length` - no BPM, no curator-note line on rows (Travis, 2026-09-01: keep the info simple).
 4. Run the envelope baker on provided audio files.
 5. Present a **review table** (rank / track / stream source / buy source / gaps) and wait for Travis's OK.
 6. Write the list JSON, update `index.json`, run the validator, commit, push. GitHub Pages deploys in about a minute.

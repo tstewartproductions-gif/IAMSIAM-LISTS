@@ -273,7 +273,7 @@ git commit -m "feat: list schema validator with tests"
     <a href="#/about">ABOUT</a>
   </nav>
 </header>
-<p class="intro-strip">INTRODUCING IAMSIAM LISTS : A WEEKLY COLLECTION OF MUSIC RECOMMENDATIONS, CURATED BY FRIENDS AND FAMILY</p>
+<p class="intro-strip">INTRODUCING IAMSIAM LISTS :<br>A WEEKLY COLLECTION OF MUSIC RECOMMENDATIONS<br>CURATED BY FRIENDS AND FAMILY</p>
 <main id="app"></main>
 <footer class="site-foot">
   <a href="https://www.instagram.com/_iamsiam_/" target="_blank" rel="noopener">INSTAGRAM</a>
@@ -342,7 +342,6 @@ main{flex:1;width:100%;max-width:760px;margin:0 auto;padding:28px 24px 64px}
 .track .art:empty{border:0}
 .track .name{font-weight:600;text-transform:uppercase;letter-spacing:.02em}
 .track .details{grid-column:3;color:var(--meta);font-size:12px}
-.track .note{grid-column:3;color:var(--strip);font-size:12px;font-style:italic}
 .track .actions{display:flex;flex-direction:column;align-items:flex-end;gap:8px}
 .badge{
   font-size:10px;color:var(--meta);border:1px solid var(--border);
@@ -439,7 +438,6 @@ function trackRow(t) {
       ${buyHref ? `<a class="buy" href="${esc(buyHref)}" target="_blank" rel="noopener">BUY ON ${esc(buy.platform)}</a>` : ''}
     </span>
     ${t.details ? `<span class="details">${esc(t.details)}</span>` : ''}
-    ${t.note ? `<span class="note">${esc(t.note)}</span>` : ''}
   </article>`;
 }
 
@@ -487,7 +485,7 @@ function aboutView() {
   return { title: 'IAMSIAM LISTS · ABOUT', html: `
   <div class="about">
     <p>IAMSIAM LISTS is a weekly collection of music recommendations, curated by friends and family of the IAMSIAM label.</p>
-    <p>Every week a different artist or friend of the label shares a top 10 of their liking. Listen here, and if something moves you, buy it — every track links to the store that supports the artist most directly.</p>
+    <p>Every week a different artist or friend of the label shares a top 10 of their liking. Listen here, and if something moves you, buy it. Every track links to the store that supports the artist most directly.</p>
     <p><a href="https://www.instagram.com/_iamsiam_/" target="_blank" rel="noopener">INSTAGRAM</a> · <a href="https://iamsiam.bandcamp.com" target="_blank" rel="noopener">BANDCAMP</a></p>
   </div>` };
 }

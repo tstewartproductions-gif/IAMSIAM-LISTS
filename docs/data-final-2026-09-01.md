@@ -1,5 +1,7 @@
 # Final track data for Task 6 (assembled from researcher output, 2026-09-01)
 
+Amended 2026-09-01 post-launch per Travis: BPM removed from details lines; `note` fields remain in data but are no longer rendered.
+
 Editorial calls made here (flag to Travis at the checkpoint):
 - Era years used for the classics (Igloo 2002, Pulse X 2002, Functions 2004, Ting Ting 2003, I Luv U 2003, Whoa 2001) rather than reissue years; modern releases use release year.
 - BPM omitted where stores had none or researchers flagged mis-tags (I've Seen, The Limit); canonical genre tempos used for Pulse X (140) and Brighter Dayz (160).
@@ -26,7 +28,7 @@ Editorial calls made here (flag to Travis at the checkpoint):
   "date": "2026-08-24",
   "tracks": [
     { "rank": 1, "artist": "Africa Hitech", "title": "Out In The Streets (VIP)",
-      "details": "warp · 2011 · 160 BPM · 5:12", "art": "art/2026-08-24/01.jpg",
+      "details": "warp · 2011 · 5:12", "art": "art/2026-08-24/01.jpg",
       "stream": { "type": "bandcamp", "url": "https://markpritchard.bandcamp.com/track/out-in-the-streets-vip" },
       "buy": [
         { "platform": "bandcamp", "url": "https://markpritchard.bandcamp.com/track/out-in-the-streets-vip" },
@@ -39,7 +41,7 @@ Editorial calls made here (flag to Travis at the checkpoint):
       "stream": { "type": "soundcloud", "url": "https://soundcloud.com/dwarde/dwarde-tim-reaper-untitled" },
       "buy": [ { "platform": "bandcamp", "url": "https://phatbubbarecords.bandcamp.com/album/pbr-001" } ] },
     { "rank": 3, "artist": "DJ Rashad & DJ Spinn", "title": "Brighter Dayz",
-      "details": "hyperdub · 2013 · 160 BPM · 3:13", "art": "art/2026-08-24/03.jpg",
+      "details": "hyperdub · 2013 · 3:13", "art": "art/2026-08-24/03.jpg",
       "stream": { "type": "bandcamp", "url": "https://dj-rashad.bandcamp.com/track/brighter-dayz" },
       "buy": [
         { "platform": "bandcamp", "url": "https://dj-rashad.bandcamp.com/track/brighter-dayz" },
@@ -54,7 +56,7 @@ Editorial calls made here (flag to Travis at the checkpoint):
         { "platform": "beatport", "url": "https://www.beatport.com/track/ive-seen/9950849" }
       ] },
     { "rank": 5, "artist": "Squarepusher/AFX", "title": "Freeman, Hardy & Willis Acid",
-      "details": "warp · 1998 · 165 BPM · 5:42", "art": "art/2026-08-24/05.jpg",
+      "details": "warp · 1998 · 5:42", "art": "art/2026-08-24/05.jpg",
       "stream": { "type": "bandcamp", "url": "https://warprecords.bandcamp.com/track/freeman-hardy-willis-acid-1" },
       "buy": [
         { "platform": "bandcamp", "url": "https://warprecords.bandcamp.com/track/freeman-hardy-willis-acid-1" },
@@ -66,14 +68,14 @@ Editorial calls made here (flag to Travis at the checkpoint):
       "stream": { "type": "bandcamp", "url": "https://audarecords.bandcamp.com/track/roctheboat-break-flip" },
       "buy": [ { "platform": "bandcamp", "url": "https://audarecords.bandcamp.com/track/roctheboat-break-flip" } ] },
     { "rank": 8, "artist": "G Jones & EPROM", "title": "The Real",
-      "details": "illusory records · 2026 · 122 BPM · 3:53", "art": "art/2026-08-24/08.jpg",
+      "details": "illusory records · 2026 · 3:53", "art": "art/2026-08-24/08.jpg",
       "stream": { "type": "bandcamp", "url": "https://eprom.bandcamp.com/track/the-real" },
       "buy": [
         { "platform": "bandcamp", "url": "https://eprom.bandcamp.com/track/the-real" },
         { "platform": "beatport", "url": "https://www.beatport.com/track/the-real/28421467" }
       ] },
     { "rank": 9, "artist": "Thys & Nick Thayer", "title": "Go Again",
-      "details": "vision recordings · 2023 · 160 BPM · 4:24", "art": "art/2026-08-24/09.jpg",
+      "details": "vision recordings · 2023 · 4:24", "art": "art/2026-08-24/09.jpg",
       "stream": { "type": "bandcamp", "url": "https://iamthys.bandcamp.com/track/go-again" },
       "buy": [
         { "platform": "bandcamp", "url": "https://iamthys.bandcamp.com/track/go-again" },
@@ -100,7 +102,7 @@ Editorial calls made here (flag to Travis at the checkpoint):
   "date": "2026-08-11",
   "tracks": [
     { "rank": 1, "section": "top 5 grime instrumentals", "artist": "Wiley", "title": "Igloo (Instrumental)",
-      "details": "xl recordings · 2002 · 137 BPM · 3:18", "art": "art/2026-08-11/01.jpg",
+      "details": "xl recordings · 2002 · 3:18", "art": "art/2026-08-11/01.jpg",
       "stream": { "type": "youtube", "url": "https://www.youtube.com/watch?v=SEh8-a2mDF4" },
       "buy": [
         { "platform": "beatport", "url": "https://www.beatport.com/track/igloo/14205411" },
@@ -112,39 +114,39 @@ Editorial calls made here (flag to Travis at the checkpoint):
       "stream": { "type": "youtube", "url": "https://www.youtube.com/watch?v=-Q-rVrMikR8" },
       "buy": [] },
     { "rank": 3, "section": "top 5 grime instrumentals", "artist": "Youngstar", "title": "Pulse X",
-      "details": "musical mob · 2002 · 140 BPM · 5:16", "art": "art/2026-08-11/03.jpg",
+      "details": "musical mob · 2002 · 5:16", "art": "art/2026-08-11/03.jpg",
       "stream": { "type": "bandcamp", "url": "https://whitepeach.bandcamp.com/track/pulse-x" },
       "buy": [
         { "platform": "bandcamp", "url": "https://whitepeach.bandcamp.com/track/pulse-x" },
         { "platform": "beatport", "url": "https://www.beatport.com/track/pulse-x-original-mix/10888496" }
       ] },
     { "rank": 4, "section": "top 5 grime instrumentals", "artist": "XTC", "title": "Functions on the Low",
-      "details": "ruff sqwad / no hats no hoods · 2004 · 140 BPM · 4:42", "art": "art/2026-08-11/04.jpg",
+      "details": "ruff sqwad / no hats no hoods · 2004 · 4:42", "art": "art/2026-08-11/04.jpg",
       "stream": { "type": "bandcamp", "url": "https://nohatsnohoods.bandcamp.com/track/functions-on-the-low" },
       "buy": [
         { "platform": "bandcamp", "url": "https://nohatsnohoods.bandcamp.com/track/functions-on-the-low" },
         { "platform": "beatport", "url": "https://www.beatport.com/track/functions-on-the-low/12209197" }
       ] },
     { "rank": 5, "section": "top 5 grime instrumentals", "artist": "Dizzee Rascal", "title": "Ting Ting (Instrumental)",
-      "details": "xl recordings · 2003 · 140 BPM · 2:05", "art": "art/2026-08-11/05.jpg",
+      "details": "xl recordings · 2003 · 2:05", "art": "art/2026-08-11/05.jpg",
       "stream": { "type": "youtube", "url": "https://www.youtube.com/watch?v=vUqUx1mtOXQ" },
       "buy": [ { "platform": "beatport", "url": "https://www.beatport.com/track/ting-ting/17962645" } ] },
     { "rank": 6, "section": "top 5 grime verses", "artist": "Dizzee Rascal", "title": "I Luv U",
-      "details": "xl recordings · 2003 · 136 BPM · 4:05", "art": "art/2026-08-11/06.jpg",
+      "details": "xl recordings · 2003 · 4:05", "art": "art/2026-08-11/06.jpg",
       "stream": { "type": "youtube", "url": "https://www.youtube.com/watch?v=YH0KWX2a8zY" },
       "buy": [
         { "platform": "beatport", "url": "https://www.beatport.com/track/i-luv-u/17962606" },
         { "platform": "itunes", "url": "https://music.apple.com/gb/album/i-luv-u-original-mix/7059186?i=7059184" }
       ] },
     { "rank": 7, "section": "top 5 grime verses", "artist": "JME feat. Giggs", "title": "Man Don't Care",
-      "details": "boy better know · 2015 · 139 BPM · 3:33", "art": "art/2026-08-11/07.jpg",
+      "details": "boy better know · 2015 · 3:33", "art": "art/2026-08-11/07.jpg",
       "stream": { "type": "youtube", "url": "https://www.youtube.com/watch?v=rivFCwwvoh8" },
       "buy": [
         { "platform": "beatport", "url": "https://www.beatport.com/track/man-dont-care/9377215" },
         { "platform": "itunes", "url": "https://music.apple.com/gb/album/man-dont-care/1168969548?i=1168969981" }
       ] },
     { "rank": 8, "section": "top 5 grime verses", "artist": "Skepta & Wizkid", "title": "Energy (Stay Far Away)",
-      "details": "boy better know · 2018 · 102 BPM · 3:17", "art": "art/2026-08-11/08.jpg",
+      "details": "boy better know · 2018 · 3:17", "art": "art/2026-08-11/08.jpg",
       "stream": { "type": "youtube", "url": "https://www.youtube.com/watch?v=ET0LuQ3_ZIw" },
       "buy": [ { "platform": "beatport", "url": "https://www.beatport.com/track/energy-stay-far-away/26767106" } ] },
     { "rank": 9, "section": "top 5 grime verses", "artist": "Faithy & Scrufizzer", "title": "Call Back",
