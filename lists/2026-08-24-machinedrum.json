@@ -1,0 +1,69 @@
+{
+  "curator": "machinedrum",
+  "listTitle": "top 10 jungle collaborations",
+  "date": "2026-08-24",
+  "tracks": [
+    { "rank": 1, "artist": "Africa Hitech", "title": "Out In The Streets (VIP)",
+      "details": "warp · 2011 · 160 BPM · 5:12", "art": "art/2026-08-24/01.jpg",
+      "stream": { "type": "bandcamp", "url": "https://markpritchard.bandcamp.com/track/out-in-the-streets-vip" },
+      "buy": [
+        { "platform": "bandcamp", "url": "https://markpritchard.bandcamp.com/track/out-in-the-streets-vip" },
+        { "platform": "beatport", "url": "https://www.beatport.com/release/out-in-the-streets-vip/379693" },
+        { "platform": "bleep", "url": "https://bleep.com/release/30211-africa-hitech-out-in-the-streets-vip" }
+      ] },
+    { "rank": 2, "artist": "Dwarde & Tim Reaper", "title": "Untitled Junglist",
+      "details": "phat bubba · 2015 · 5:41", "art": "art/2026-08-24/02.jpg",
+      "note": "vinyl-only release, long sold out",
+      "stream": { "type": "soundcloud", "url": "https://soundcloud.com/dwarde/dwarde-tim-reaper-untitled" },
+      "buy": [ { "platform": "bandcamp", "url": "https://phatbubbarecords.bandcamp.com/album/pbr-001" } ] },
+    { "rank": 3, "artist": "DJ Rashad & DJ Spinn", "title": "Brighter Dayz",
+      "details": "hyperdub · 2013 · 160 BPM · 3:13", "art": "art/2026-08-24/03.jpg",
+      "stream": { "type": "bandcamp", "url": "https://dj-rashad.bandcamp.com/track/brighter-dayz" },
+      "buy": [
+        { "platform": "bandcamp", "url": "https://dj-rashad.bandcamp.com/track/brighter-dayz" },
+        { "platform": "beatport", "url": "https://www.beatport.com/track/brighter-dayz/10000355" },
+        { "platform": "bleep", "url": "https://bleep.com/release/44779-dj-rashad-i-dont-give-a-fuck" }
+      ] },
+    { "rank": 4, "artist": "Skeptical & dBridge", "title": "I've Seen",
+      "details": "exit records · 2017 · 5:20", "art": "art/2026-08-24/04.jpg",
+      "stream": { "type": "bandcamp", "url": "https://exitrecordsuk.bandcamp.com/track/ive-seen" },
+      "buy": [
+        { "platform": "bandcamp", "url": "https://exitrecordsuk.bandcamp.com/track/ive-seen" },
+        { "platform": "beatport", "url": "https://www.beatport.com/track/ive-seen/9950849" }
+      ] },
+    { "rank": 5, "artist": "Squarepusher/AFX", "title": "Freeman, Hardy & Willis Acid",
+      "details": "warp · 1998 · 165 BPM · 5:42", "art": "art/2026-08-24/05.jpg",
+      "stream": { "type": "bandcamp", "url": "https://warprecords.bandcamp.com/track/freeman-hardy-willis-acid-1" },
+      "buy": [
+        { "platform": "bandcamp", "url": "https://warprecords.bandcamp.com/track/freeman-hardy-willis-acid-1" },
+        { "platform": "beatport", "url": "https://www.beatport.com/track/freeman-hardy-willis-acid/169383" },
+        { "platform": "bleep", "url": "https://bleep.com/release/13401-various-artists-we-are-reasonable-people" }
+      ] },
+    { "rank": 6, "artist": "adlai & Loqum", "title": "ROCTHEBOAT BREAK FLIP",
+      "details": "auda records · 2024 · 5:31", "art": "art/2026-08-24/06.jpg",
+      "stream": { "type": "bandcamp", "url": "https://audarecords.bandcamp.com/track/roctheboat-break-flip" },
+      "buy": [ { "platform": "bandcamp", "url": "https://audarecords.bandcamp.com/track/roctheboat-break-flip" } ] },
+    { "rank": 8, "artist": "G Jones & EPROM", "title": "The Real",
+      "details": "illusory records · 2026 · 122 BPM · 3:53", "art": "art/2026-08-24/08.jpg",
+      "stream": { "type": "bandcamp", "url": "https://eprom.bandcamp.com/track/the-real" },
+      "buy": [
+        { "platform": "bandcamp", "url": "https://eprom.bandcamp.com/track/the-real" },
+        { "platform": "beatport", "url": "https://www.beatport.com/track/the-real/28421467" }
+      ] },
+    { "rank": 9, "artist": "Thys & Nick Thayer", "title": "Go Again",
+      "details": "vision recordings · 2023 · 160 BPM · 4:24", "art": "art/2026-08-24/09.jpg",
+      "stream": { "type": "bandcamp", "url": "https://iamthys.bandcamp.com/track/go-again" },
+      "buy": [
+        { "platform": "bandcamp", "url": "https://iamthys.bandcamp.com/track/go-again" },
+        { "platform": "beatport", "url": "https://www.beatport.com/track/go-again/17534633" }
+      ] },
+    { "rank": 10, "artist": "Fracture & Neptune", "title": "The Limit",
+      "details": "astrophonica · 2010 · 6:24", "art": "art/2026-08-24/10.jpg",
+      "stream": { "type": "bandcamp", "url": "https://astrophonica.bandcamp.com/track/the-limit" },
+      "buy": [
+        { "platform": "bandcamp", "url": "https://astrophonica.bandcamp.com/track/the-limit" },
+        { "platform": "beatport", "url": "https://www.beatport.com/track/the-limit/13001278" },
+        { "platform": "bandcamp", "url": "https://fracture.bandcamp.com/album/clissold-the-limit-2024-reissue" }
+      ] }
+  ]
+}
