@@ -1,13 +1,14 @@
 // IAMSIAM_LISTS - hash router + renderers. No deps, no build.
 const app = document.getElementById('app');
-const state = { index: null, lists: {} };
+const state = { seq: 0, index: undefined, lists: Object.create(null), current: null };
 
 const esc = s => String(s ?? '').replace(/[&<>"']/g,
   c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const pad2 = n => String(n).padStart(2, '0');
+const safeUrl = u => /^https?:\/\//i.test(String(u ?? '')) ? String(u) : '';
 
 async function getIndex() {
-  if (!state.index) {
+  if (state.index === undefined) {
     const r = await fetch('index.json');
     if (!r.ok) throw new Error(`index.json ${r.status}`);
     state.index = await r.json();
@@ -16,7 +17,7 @@ async function getIndex() {
 }
 
 async function getList(slug) {
-  if (!state.lists[slug]) {
+  if (!(slug in state.lists)) {
     const r = await fetch(`lists/${encodeURIComponent(slug)}.json`);
     if (!r.ok) throw new Error(`list "${slug}" not found`);
     state.lists[slug] = await r.json();
@@ -24,29 +25,29 @@ async function getList(slug) {
   return state.lists[slug];
 }
 
-function buyLabel(buy) {
-  return `BUY ON ${esc(buy.platform).toUpperCase()}`;
-}
-
 function trackRow(t) {
   const buy = t.buy?.[0];
+  const buyHref = buy ? safeUrl(buy.url) : '';
   return `
-  <article class="track">
-    <span class="rank">${pad2(t.rank)}</span>
+  <article class="track" data-rank="${esc(t.rank)}">
+    <span class="rank">${esc(pad2(t.rank))}</span>
+    <span class="art">${t.art ? `<img src="${esc(t.art)}" loading="lazy" alt="">` : ''}</span>
     <span class="name">${esc(t.artist)} — ${esc(t.title)}</span>
     <span class="actions">
-      <span class="badge">${esc(t.stream ? t.stream.type : 'unreleased')}</span>
-      ${buy ? `<a class="buy" href="${esc(buy.url)}" target="_blank" rel="noopener">${buyLabel(buy)}</a>` : ''}
+      <span class="badge">${esc(t.stream?.type || 'unreleased')}</span>
+      ${buyHref ? `<a class="buy" href="${esc(buyHref)}" target="_blank" rel="noopener">BUY ON ${esc(buy.platform)}</a>` : ''}
     </span>
     ${t.details ? `<span class="details">${esc(t.details)}</span>` : ''}
     ${t.note ? `<span class="note">${esc(t.note)}</span>` : ''}
   </article>`;
 }
 
-function renderList(list) {
+function listView(list) {
+  if (!list || !Array.isArray(list.tracks)) throw new Error('malformed list');
+  state.current = list;
   let html = `
   <div class="list-head">
-    <div class="curator">CURATED BY ${esc(list.curator).toUpperCase()}</div>
+    <div class="curator">CURATED BY ${esc(list.curator)}</div>
     <h1>${esc(list.listTitle)}</h1>
     <div class="date">${esc(list.date)}</div>
   </div>`;
@@ -58,46 +59,54 @@ function renderList(list) {
     }
     html += trackRow(t);
   }
-  app.innerHTML = html;
+  return { html, title: `IAMSIAM LISTS · ${list.listTitle}` };
 }
 
-async function renderHome() {
+async function homeView() {
   const index = await getIndex();
-  const latest = [...index].sort((a, b) => b.date.localeCompare(a.date))[0];
-  renderList(await getList(latest.slug));
+  const latest = Array.isArray(index) ? [...index].sort((a, b) => String(b.date).localeCompare(String(a.date)))[0] : null;
+  if (!latest) return { html: `<div class="error-view">NO LISTS YET</div>`, title: 'IAMSIAM LISTS' };
+  return listView(await getList(latest.slug));
 }
 
-async function renderArchive() {
+async function archiveView() {
   const index = await getIndex();
-  const items = [...index].sort((a, b) => b.date.localeCompare(a.date)).map(e => `
+  const items = (Array.isArray(index) ? [...index] : []).sort((a, b) => String(b.date).localeCompare(String(a.date))).map(e => `
     <a href="#/list/${esc(e.slug)}">
-      <div class="curator">${esc(e.curator).toUpperCase()}</div>
+      <div class="curator">${esc(e.curator)}</div>
       <div class="title">${esc(e.listTitle)}</div>
       <div class="date">${esc(e.date)}</div>
     </a>`).join('');
-  app.innerHTML = `<div class="archive-grid">${items}</div>`;
+  if (!items) return { html: `<div class="error-view">NO LISTS YET</div>`, title: 'IAMSIAM LISTS · ARCHIVE' };
+  return { html: `<div class="archive-grid">${items}</div>`, title: 'IAMSIAM LISTS · ARCHIVE' };
 }
 
-function renderAbout() {
-  app.innerHTML = `
+function aboutView() {
+  return { title: 'IAMSIAM LISTS · ABOUT', html: `
   <div class="about">
     <p>IAMSIAM LISTS is a weekly collection of music recommendations, curated by friends and family of the IAMSIAM label.</p>
     <p>Every week a different artist or friend of the label shares a top 10 of their liking. Listen here, and if something moves you, buy it — every track links to the store that supports the artist most directly.</p>
     <p><a href="https://www.instagram.com/_iamsiam_/" target="_blank" rel="noopener">INSTAGRAM</a> · <a href="https://iamsiam.bandcamp.com" target="_blank" rel="noopener">BANDCAMP</a></p>
-  </div>`;
+  </div>` };
 }
 
 async function route() {
+  const seq = ++state.seq;
   const hash = location.hash.replace(/^#\/?/, '');
+  let view;
   try {
-    if (hash === '') await renderHome();
-    else if (hash === 'archive') await renderArchive();
-    else if (hash === 'about') renderAbout();
-    else if (hash.startsWith('list/')) renderList(await getList(hash.slice(5)));
-    else await renderHome();
+    if (hash === '') view = await homeView();
+    else if (hash === 'archive') view = await archiveView();
+    else if (hash === 'about') view = aboutView();
+    else if (hash.startsWith('list/')) view = listView(await getList(decodeURIComponent(hash.slice(5))));
+    else view = await homeView();
   } catch (err) {
-    app.innerHTML = `<div class="error-view">COULDN'T LOAD THAT — ${esc(err.message)}</div>`;
+    console.error(err);
+    view = { html: `<div class="error-view">COULDN'T LOAD THAT</div>`, title: 'IAMSIAM LISTS' };
   }
+  if (seq !== state.seq) return;
+  app.innerHTML = view.html;
+  document.title = view.title;
   window.scrollTo(0, 0);
 }
 
