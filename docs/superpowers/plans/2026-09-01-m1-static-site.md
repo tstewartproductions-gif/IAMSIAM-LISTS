@@ -504,7 +504,7 @@ route();
 
 - [ ] **Step 2: Smoke-check with placeholder data, then remove it**
 
-Create a temporary `index.json` + `lists/` entry using the `good()` fixture shape from the validator test, start the dev server (`preview_start` name `iamsiam-lists`), open `http://localhost:8734`, verify: home renders the track row, `#/archive` shows one tile, `#/about` renders, a bad hash shows the error view. Then delete the temp data (real data lands in Task 6).
+Create a temporary `index.json` + `lists/` entry using the `good()` fixture shape from the validator test, start the dev server (`preview_start` name `iamsiam-lists`), open `http://localhost:8734`, verify: home renders the track row, `#/archive` shows one tile, `#/about` renders, `#/list/<nonexistent-slug>` shows the error view (unknown top-level hashes deliberately fall back to home). Then delete the temp data (real data lands in Task 6).
 
 - [ ] **Step 3: Commit**
 
@@ -615,7 +615,7 @@ git push
 
 ### Task 7: QA pass + M1 gate
 
-- [ ] **Step 1: Full check on the live Pages URL** (browser tool): home shows the newest list; every buy link opens the right store page; archive shows both weeks and loads each; about renders; error view on a junk hash.
+- [ ] **Step 1: Full check on the live Pages URL** (browser tool): home shows the newest list; every buy link opens the right store page; archive shows both weeks and loads each; about renders; `#/list/<nonexistent-slug>` shows the error view (unknown top-level hashes deliberately fall back to home).
 - [ ] **Step 2: Mobile pass** - `resize_window` mobile preset: track rows wrap per the 520px breakpoint, nothing overflows horizontally.
 - [ ] **Step 3: Screenshot desktop + mobile for Travis.**
 - [ ] **Step 4: Declare M1 complete** only after Travis confirms the look direction (this doubles as the design-iteration gate from DESIGN.md). Then M2 (unified player) gets its own plan.
