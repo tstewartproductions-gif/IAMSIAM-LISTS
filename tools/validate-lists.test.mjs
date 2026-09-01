@@ -22,6 +22,19 @@ const good = () => ({
   }]
 });
 
+// A fully-valid track template for building multi-track fixtures, so tests that
+// exercise cross-track checks (rank order, section runs) don't trip unrelated
+// per-track errors.
+const makeTrack = (overrides) => ({
+  rank: 1,
+  artist: 'Africa Hitech',
+  title: 'Out In The Streets (VIP)',
+  details: 'warp · 2011 · 170 BPM',
+  stream: { type: 'bandcamp', url: 'https://africahitech.bandcamp.com/track/x' },
+  buy: [{ platform: 'bandcamp', url: 'https://africahitech.bandcamp.com/track/x' }],
+  ...overrides
+});
+
 // --- core field validation ---
 
 test('valid list passes with no errors', () => {
@@ -159,6 +172,64 @@ test('errors on a later track are numbered correctly', () => {
   l.tracks.push({ ...l.tracks[0], rank: 2, artist: undefined });
   const r = validateList(l);
   assert.ok(r.errors.includes('track 2: missing artist'), r.errors.join(' '));
+});
+
+// --- rank order: ascending in file order (gaps are fine; the renderer displays
+// tracks in file order, so descending ranks are an authoring error) ---
+
+test('ascending ranks with gaps do not error', () => {
+  const l = good();
+  l.tracks = [
+    makeTrack({ rank: 1, artist: 'Artist A', title: 'Track A' }),
+    makeTrack({ rank: 2, artist: 'Artist B', title: 'Track B' }),
+    makeTrack({ rank: 4, artist: 'Artist C', title: 'Track C' }),
+    makeTrack({ rank: 5, artist: 'Artist D', title: 'Track D' })
+  ];
+  assert.deepEqual(validateList(l).errors, []);
+});
+
+test('out-of-order ranks are an error', () => {
+  const l = good();
+  l.tracks = [
+    makeTrack({ rank: 1, artist: 'Artist A', title: 'Track A' }),
+    makeTrack({ rank: 3, artist: 'Artist B', title: 'Track B' }),
+    makeTrack({ rank: 2, artist: 'Artist C', title: 'Track C' })
+  ];
+  assert.match(validateList(l).errors.join(' '), /tracks out of order: rank 2 appears after rank 3/);
+});
+
+// --- section runs must be contiguous (the renderer prints one header per run,
+// in file order - a split run would repeat the same header) ---
+
+test('contiguous section runs do not error', () => {
+  const l = good();
+  l.tracks = [
+    makeTrack({ rank: 1, artist: 'Artist A', title: 'Track A', section: 'A' }),
+    makeTrack({ rank: 2, artist: 'Artist B', title: 'Track B', section: 'A' }),
+    makeTrack({ rank: 3, artist: 'Artist C', title: 'Track C', section: 'B' }),
+    makeTrack({ rank: 4, artist: 'Artist D', title: 'Track D', section: 'B' })
+  ];
+  assert.deepEqual(validateList(l).errors, []);
+});
+
+test('a split section run is an error', () => {
+  const l = good();
+  l.tracks = [
+    makeTrack({ rank: 1, artist: 'Artist A', title: 'Track A', section: 'A' }),
+    makeTrack({ rank: 2, artist: 'Artist B', title: 'Track B', section: 'B' }),
+    makeTrack({ rank: 3, artist: 'Artist C', title: 'Track C', section: 'A' })
+  ];
+  assert.match(validateList(l).errors.join(' '), /section "A" run is not contiguous/);
+});
+
+test('no sections at all does not error', () => {
+  const l = good();
+  l.tracks = [
+    makeTrack({ rank: 1, artist: 'Artist A', title: 'Track A' }),
+    makeTrack({ rank: 2, artist: 'Artist B', title: 'Track B' }),
+    makeTrack({ rank: 3, artist: 'Artist C', title: 'Track C' })
+  ];
+  assert.deepEqual(validateList(l).errors, []);
 });
 
 // --- validateIndexEntry (pure) ---

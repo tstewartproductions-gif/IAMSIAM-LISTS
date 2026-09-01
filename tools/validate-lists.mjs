@@ -48,6 +48,8 @@ export function validateList(list) {
   const tracks = Array.isArray(list?.tracks) ? list.tracks : [];
 
   const seenRanks = new Map(); // rank -> first track index that used it
+  let lastRank; // rank of the immediately preceding track with a valid rank, for ordering
+  const sectionSeq = []; // { i, section } for valid track objects, in file order
 
   for (const [i, raw] of tracks.entries()) {
     const at = `track ${i + 1}`;
@@ -58,11 +60,24 @@ export function validateList(list) {
       continue;
     }
     const t = raw;
+    sectionSeq.push({ i, section: t.section });
 
-    if (t.rank == null) errors.push(`${at}: missing rank`);
-    else if (!Number.isInteger(t.rank) || t.rank < 1) errors.push(`${at}: rank must be a positive integer`);
-    else if (seenRanks.has(t.rank)) errors.push(`${at}: duplicate rank ${t.rank} (also track ${seenRanks.get(t.rank) + 1})`);
-    else seenRanks.set(t.rank, i);
+    // The renderer displays tracks in file order, so rank must be strictly
+    // ascending as written - gaps are fine (an unreleased track can be
+    // omitted), but a lower rank appearing after a higher one is an
+    // authoring error, independent of the duplicate-rank check below.
+    if (t.rank == null) {
+      errors.push(`${at}: missing rank`);
+    } else if (!Number.isInteger(t.rank) || t.rank < 1) {
+      errors.push(`${at}: rank must be a positive integer`);
+    } else {
+      if (seenRanks.has(t.rank)) errors.push(`${at}: duplicate rank ${t.rank} (also track ${seenRanks.get(t.rank) + 1})`);
+      else seenRanks.set(t.rank, i);
+
+      if (lastRank !== undefined && t.rank < lastRank)
+        errors.push(`${at}: tracks out of order: rank ${t.rank} appears after rank ${lastRank}`);
+      lastRank = t.rank;
+    }
 
     issue = textIssue(t.artist, 'artist'); if (issue) errors.push(`${at}: ${issue}`);
     issue = textIssue(t.title, 'title'); if (issue) errors.push(`${at}: ${issue}`);
@@ -97,6 +112,27 @@ export function validateList(list) {
     if (!t.details) warnings.push(`${at}: no details line`);
     if (!t.art) warnings.push(`${at}: no artwork`);
   }
+
+  // Section headers must form contiguous runs: the renderer prints tracks (and
+  // one header per run) in file order, so a value that appears, disappears
+  // behind a different section, then reappears would print the same header
+  // twice. undefined (no section set) counts as its own value in the sequence.
+  // Malformed track elements are excluded - they were already flagged above
+  // and have no meaningful section.
+  const closedSections = new Set();
+  let currentSection, haveCurrentSection = false;
+  for (const { i, section } of sectionSeq) {
+    if (haveCurrentSection && section === currentSection) continue;
+    if (closedSections.has(section)) {
+      const label = section === undefined ? '(none)' : `"${section}"`;
+      errors.push(`track ${i + 1}: section ${label} run is not contiguous`);
+    } else {
+      if (haveCurrentSection) closedSections.add(currentSection);
+      currentSection = section;
+      haveCurrentSection = true;
+    }
+  }
+
   return { errors, warnings };
 }
 
