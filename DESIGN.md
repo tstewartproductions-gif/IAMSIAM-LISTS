@@ -57,7 +57,7 @@ One file per week: `lists/YYYY-MM-DD-curator.json`
 ```
 
 - `stream.type`: `bandcamp | soundcloud | youtube | other`. Stream priority when resolving: **Bandcamp first**, then SoundCloud, then YouTube (SoundCloud ranks above YouTube because it is audio-first and needs no video slot), then whatever site actually hosts it.
-- `stream` MAY be absent for tracks that exist nowhere public (private dubplates - they recur in curated lists). The row renders with an UNRELEASED badge, the player skips it, and the validator warns instead of erroring.
+- **Unreleased tracks are left off the site entirely** (Travis's call, 2026-09-01): if a track has no public stream anywhere (private dubplates), `/add-list` omits it and keeps the remaining tracks' original rank numbers. The schema still tolerates an absent `stream` (renders an UNRELEASED badge, player skips, validator warns) as belt-and-braces, but the policy is omission.
 - `buy`: priority-ordered. **Bandcamp first, then Beatport, then wherever it is genuinely sold** (Boomkat, Juno, iTunes, etc.). The site renders `buy[0]` as THE buy button; extras can show in an expandable row. `buy` MAY be empty for tracks that are genuinely not for sale anywhere (dubplates, video-only freestyles) - the site then shows no buy button, and the validator warns instead of erroring.
 - `envelope` and `note` are optional. A track without an envelope gets the simulated VU mode.
 - An `index.json` lists all weeks (date, curator, listTitle, slug) so the archive renders without fetching every file.

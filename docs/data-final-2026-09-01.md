@@ -4,8 +4,8 @@ Editorial calls made here (flag to Travis at the checkpoint):
 - Era years used for the classics (Igloo 2002, Pulse X 2002, Functions 2004, Ting Ting 2003, I Luv U 2003, Whoa 2001) rather than reissue years; modern releases use release year.
 - BPM omitted where stores had none or researchers flagged mis-tags (I've Seen, The Limit); canonical genre tempos used for Pulse X (140) and Brighter Dayz (160).
 - Artist billings follow the curators' own lists (e.g. "Thys & Nick Thayer", "Squarepusher/AFX").
-- Scrufizzer's week date is PROVISIONAL (2026-08-17) - confirm with Travis.
-- PRISM x Wheez-ie: unreleased dubplate, no stream/buy exists publicly (confirmed by exhaustive catalog search).
+- Scrufizzer's week date CONFIRMED by Travis: 2026-08-11 (publishing date of the list).
+- PRISM x Wheez-ie: OMITTED per Travis (2026-09-01) - policy: unreleased tracks are left off the site. Original rank numbers preserved (07 skipped).
 - So Solid "Whoa" instrumental + "Call Back": no legitimate buy source exists; empty buy is a schema-sanctioned warning.
 
 ## index.json
@@ -13,7 +13,7 @@ Editorial calls made here (flag to Travis at the checkpoint):
 ```json
 [
   { "slug": "2026-08-24-machinedrum", "date": "2026-08-24", "curator": "machinedrum", "listTitle": "top 10 jungle collaborations" },
-  { "slug": "2026-08-17-scrufizzer", "date": "2026-08-17", "curator": "scrufizzer", "listTitle": "top 5 grime instrumentals + top 5 grime verses of all time" }
+  { "slug": "2026-08-11-scrufizzer", "date": "2026-08-11", "curator": "scrufizzer", "listTitle": "top 5 grime instrumentals + top 5 grime verses of all time" }
 ]
 ```
 
@@ -65,9 +65,6 @@ Editorial calls made here (flag to Travis at the checkpoint):
       "details": "auda records · 2024 · 5:31", "art": "art/2026-08-24/06.jpg",
       "stream": { "type": "bandcamp", "url": "https://audarecords.bandcamp.com/track/roctheboat-break-flip" },
       "buy": [ { "platform": "bandcamp", "url": "https://audarecords.bandcamp.com/track/roctheboat-break-flip" } ] },
-    { "rank": 7, "artist": "PRISM x Wheez-ie", "title": "Battalion Edit",
-      "note": "unreleased dubplate",
-      "buy": [] },
     { "rank": 8, "artist": "G Jones & EPROM", "title": "The Real",
       "details": "illusory records · 2026 · 122 BPM · 3:53", "art": "art/2026-08-24/08.jpg",
       "stream": { "type": "bandcamp", "url": "https://eprom.bandcamp.com/track/the-real" },
@@ -94,69 +91,69 @@ Editorial calls made here (flag to Travis at the checkpoint):
 }
 ```
 
-## lists/2026-08-17-scrufizzer.json
+## lists/2026-08-11-scrufizzer.json
 
 ```json
 {
   "curator": "scrufizzer",
   "listTitle": "top 5 grime instrumentals + top 5 grime verses of all time",
-  "date": "2026-08-17",
+  "date": "2026-08-11",
   "tracks": [
     { "rank": 1, "section": "top 5 grime instrumentals", "artist": "Wiley", "title": "Igloo (Instrumental)",
-      "details": "xl recordings · 2002 · 137 BPM · 3:18", "art": "art/2026-08-17/01.jpg",
+      "details": "xl recordings · 2002 · 137 BPM · 3:18", "art": "art/2026-08-11/01.jpg",
       "stream": { "type": "youtube", "url": "https://www.youtube.com/watch?v=SEh8-a2mDF4" },
       "buy": [
         { "platform": "beatport", "url": "https://www.beatport.com/track/igloo/14205411" },
         { "platform": "itunes", "url": "https://music.apple.com/gb/album/igloo-instrumental/1450123666?i=1450123668" }
       ] },
     { "rank": 2, "section": "top 5 grime instrumentals", "artist": "So Solid Crew", "title": "Whoa (Instrumental)",
-      "details": "relentless · 2001 · 4:01", "art": "art/2026-08-17/02.jpg",
+      "details": "relentless · 2001 · 4:01", "art": "art/2026-08-11/02.jpg",
       "note": "never released digitally",
       "stream": { "type": "youtube", "url": "https://www.youtube.com/watch?v=-Q-rVrMikR8" },
       "buy": [] },
     { "rank": 3, "section": "top 5 grime instrumentals", "artist": "Youngstar", "title": "Pulse X",
-      "details": "musical mob · 2002 · 140 BPM · 5:16", "art": "art/2026-08-17/03.jpg",
+      "details": "musical mob · 2002 · 140 BPM · 5:16", "art": "art/2026-08-11/03.jpg",
       "stream": { "type": "bandcamp", "url": "https://whitepeach.bandcamp.com/track/pulse-x" },
       "buy": [
         { "platform": "bandcamp", "url": "https://whitepeach.bandcamp.com/track/pulse-x" },
         { "platform": "beatport", "url": "https://www.beatport.com/track/pulse-x-original-mix/10888496" }
       ] },
     { "rank": 4, "section": "top 5 grime instrumentals", "artist": "XTC", "title": "Functions on the Low",
-      "details": "ruff sqwad / no hats no hoods · 2004 · 140 BPM · 4:42", "art": "art/2026-08-17/04.jpg",
+      "details": "ruff sqwad / no hats no hoods · 2004 · 140 BPM · 4:42", "art": "art/2026-08-11/04.jpg",
       "stream": { "type": "bandcamp", "url": "https://nohatsnohoods.bandcamp.com/track/functions-on-the-low" },
       "buy": [
         { "platform": "bandcamp", "url": "https://nohatsnohoods.bandcamp.com/track/functions-on-the-low" },
         { "platform": "beatport", "url": "https://www.beatport.com/track/functions-on-the-low/12209197" }
       ] },
     { "rank": 5, "section": "top 5 grime instrumentals", "artist": "Dizzee Rascal", "title": "Ting Ting (Instrumental)",
-      "details": "xl recordings · 2003 · 140 BPM · 2:05", "art": "art/2026-08-17/05.jpg",
+      "details": "xl recordings · 2003 · 140 BPM · 2:05", "art": "art/2026-08-11/05.jpg",
       "stream": { "type": "youtube", "url": "https://www.youtube.com/watch?v=vUqUx1mtOXQ" },
       "buy": [ { "platform": "beatport", "url": "https://www.beatport.com/track/ting-ting/17962645" } ] },
     { "rank": 6, "section": "top 5 grime verses", "artist": "Dizzee Rascal", "title": "I Luv U",
-      "details": "xl recordings · 2003 · 136 BPM · 4:05", "art": "art/2026-08-17/06.jpg",
+      "details": "xl recordings · 2003 · 136 BPM · 4:05", "art": "art/2026-08-11/06.jpg",
       "stream": { "type": "youtube", "url": "https://www.youtube.com/watch?v=YH0KWX2a8zY" },
       "buy": [
         { "platform": "beatport", "url": "https://www.beatport.com/track/i-luv-u/17962606" },
         { "platform": "itunes", "url": "https://music.apple.com/gb/album/i-luv-u-original-mix/7059186?i=7059184" }
       ] },
     { "rank": 7, "section": "top 5 grime verses", "artist": "JME feat. Giggs", "title": "Man Don't Care",
-      "details": "boy better know · 2015 · 139 BPM · 3:33", "art": "art/2026-08-17/07.jpg",
+      "details": "boy better know · 2015 · 139 BPM · 3:33", "art": "art/2026-08-11/07.jpg",
       "stream": { "type": "youtube", "url": "https://www.youtube.com/watch?v=rivFCwwvoh8" },
       "buy": [
         { "platform": "beatport", "url": "https://www.beatport.com/track/man-dont-care/9377215" },
         { "platform": "itunes", "url": "https://music.apple.com/gb/album/man-dont-care/1168969548?i=1168969981" }
       ] },
     { "rank": 8, "section": "top 5 grime verses", "artist": "Skepta & Wizkid", "title": "Energy (Stay Far Away)",
-      "details": "boy better know · 2018 · 102 BPM · 3:17", "art": "art/2026-08-17/08.jpg",
+      "details": "boy better know · 2018 · 102 BPM · 3:17", "art": "art/2026-08-11/08.jpg",
       "stream": { "type": "youtube", "url": "https://www.youtube.com/watch?v=ET0LuQ3_ZIw" },
       "buy": [ { "platform": "beatport", "url": "https://www.beatport.com/track/energy-stay-far-away/26767106" } ] },
     { "rank": 9, "section": "top 5 grime verses", "artist": "Faithy & Scrufizzer", "title": "Call Back",
-      "details": "sbtv · 2013 · 4:02", "art": "art/2026-08-17/09.jpg",
+      "details": "sbtv · 2013 · 4:02", "art": "art/2026-08-11/09.jpg",
       "note": "sbtv premiere - never commercially released",
       "stream": { "type": "youtube", "url": "https://www.youtube.com/watch?v=PbsGxVySwys" },
       "buy": [] },
     { "rank": 10, "section": "top 5 grime verses", "artist": "Kano", "title": "GarageSkankFREESTYLE",
-      "details": "parlophone · 2015 · 4:43", "art": "art/2026-08-17/10.jpg",
+      "details": "parlophone · 2015 · 4:43", "art": "art/2026-08-11/10.jpg",
       "stream": { "type": "youtube", "url": "https://www.youtube.com/watch?v=qTKSIk7Uqvo" },
       "buy": [ { "platform": "itunes", "url": "https://music.apple.com/gb/album/garageskankfreestyle-bonus-track/1091299537?i=1091300303" } ] }
   ]
@@ -165,8 +162,8 @@ Editorial calls made here (flag to Travis at the checkpoint):
 
 ## Artwork source URLs (download → art/<date>/NN.jpg; skip on failure, art is a warning)
 
-jungle (2026-08-24): 01 https://f4.bcbits.com/img/a3442448730_5.jpg · 02 https://f4.bcbits.com/img/a1866122382_5.jpg · 03 https://f4.bcbits.com/img/a1793369880_5.jpg · 04 https://f4.bcbits.com/img/a3421982985_5.jpg · 05 https://f4.bcbits.com/img/a3407510605_5.jpg · 06 https://f4.bcbits.com/img/a1917473171_5.jpg · 07 (none - no art field in JSON) · 08 https://f4.bcbits.com/img/a3075004503_5.jpg · 09 https://f4.bcbits.com/img/a3764202028_5.jpg · 10 https://f4.bcbits.com/img/a1807101491_5.jpg
+jungle (2026-08-24): 01 https://f4.bcbits.com/img/a3442448730_5.jpg · 02 https://f4.bcbits.com/img/a1866122382_5.jpg · 03 https://f4.bcbits.com/img/a1793369880_5.jpg · 04 https://f4.bcbits.com/img/a3421982985_5.jpg · 05 https://f4.bcbits.com/img/a3407510605_5.jpg · 06 https://f4.bcbits.com/img/a1917473171_5.jpg · 07 (track omitted from site) · 08 https://f4.bcbits.com/img/a3075004503_5.jpg · 09 https://f4.bcbits.com/img/a3764202028_5.jpg · 10 https://f4.bcbits.com/img/a1807101491_5.jpg
 
-grime (2026-08-17): 01 https://geo-media.beatport.com/image_size/1400x1400/f519759d-565b-456a-815a-ff6ae7dfdfb5.jpg · 02 https://i.ytimg.com/vi/-Q-rVrMikR8/maxresdefault.jpg · 03 https://f4.bcbits.com/img/a2668513168_5.jpg · 04 https://f4.bcbits.com/img/a0229049053_5.jpg · 05 https://geo-media.beatport.com/image_size/1400x1400/25937ee2-a324-46cc-a89f-036468ebe1bf.jpg · 06 https://geo-media.beatport.com/image_size/1400x1400/25937ee2-a324-46cc-a89f-036468ebe1bf.jpg · 07 https://geo-media.beatport.com/image_size/1400x1400/f1c708f4-46a1-479a-93f5-c710fea4ce8e.jpg · 08 https://geo-media.beatport.com/image_size/1400x1400/b88b1e95-e20d-44a0-94f3-d924af3cab71.jpg · 09 https://i.ytimg.com/vi/PbsGxVySwys/hqdefault.jpg · 10 https://i.ytimg.com/vi/qTKSIk7Uqvo/maxresdefault.jpg
+grime (2026-08-11): 01 https://geo-media.beatport.com/image_size/1400x1400/f519759d-565b-456a-815a-ff6ae7dfdfb5.jpg · 02 https://i.ytimg.com/vi/-Q-rVrMikR8/maxresdefault.jpg · 03 https://f4.bcbits.com/img/a2668513168_5.jpg · 04 https://f4.bcbits.com/img/a0229049053_5.jpg · 05 https://geo-media.beatport.com/image_size/1400x1400/25937ee2-a324-46cc-a89f-036468ebe1bf.jpg · 06 https://geo-media.beatport.com/image_size/1400x1400/25937ee2-a324-46cc-a89f-036468ebe1bf.jpg · 07 https://geo-media.beatport.com/image_size/1400x1400/f1c708f4-46a1-479a-93f5-c710fea4ce8e.jpg · 08 https://geo-media.beatport.com/image_size/1400x1400/b88b1e95-e20d-44a0-94f3-d924af3cab71.jpg · 09 https://i.ytimg.com/vi/PbsGxVySwys/hqdefault.jpg · 10 https://i.ytimg.com/vi/qTKSIk7Uqvo/maxresdefault.jpg
 
-Note: track 7 (jungle) intentionally has NO `art`, `details`, or `stream` field - it's the unreleased dubplate; the schema treats those as warnings.
+Note: jungle rank 07 (PRISM x Wheez-ie - Battalion Edit) is omitted from the site per Travis - unreleased tracks stay off; ranks keep their original numbers (01-06, 08-10).
