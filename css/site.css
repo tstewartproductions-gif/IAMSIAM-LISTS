@@ -91,7 +91,6 @@ main{flex:1;width:100%;max-width:760px;margin:0 auto;padding:28px 24px 64px}
 #player-media .mount.live{display:block}
 #player-meta{display:flex;justify-content:space-between;gap:12px;margin-top:10px;font-size:12px}
 #player-track{font-weight:600;text-transform:uppercase;letter-spacing:.02em}
-#player-list{color:var(--strip)}
 #player-bar{display:flex;align-items:center;gap:10px;margin-top:10px}
 #player-bar button{background:none;border:1px solid var(--border);color:var(--fg);font-family:var(--mono);font-size:13px;padding:5px 11px;cursor:pointer}
 #player-bar button:hover{border-color:var(--fg)}
@@ -110,3 +109,13 @@ main{flex:1;width:100%;max-width:760px;margin:0 auto;padding:28px 24px 64px}
   #player-bar button{padding:12px 16px;font-size:15px}
   #scrub::-webkit-slider-thumb{width:16px;height:16px}
 }
+
+/* VU meter + typing info layer */
+#player-media{position:relative}
+#player-media canvas.vu-overlay{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+#player.vu-full #player-media .mount.live{opacity:.22}
+#vu-strip{width:100%;height:110px;border:1px solid var(--border);border-top:0}
+#vu-strip[hidden]{display:none}
+#player-details{color:var(--meta);font-size:12px}
+.typing::after{content:'▮';animation:blink 1s steps(1) infinite}
+@keyframes blink{50%{opacity:0}}

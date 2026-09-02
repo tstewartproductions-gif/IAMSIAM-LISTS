@@ -1,5 +1,6 @@
 // IAMSIAM_LISTS - unified transport over the current list's playable tracks.
 import { adapterFor } from './adapters.js';
+import { loadLogo, createMeter, envelopeSource, simSource, typeInto } from './iamsiam-vu.js';
 
 const $ = id => document.getElementById(id);
 const fmt = s => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
@@ -17,8 +18,100 @@ const P = {
 
 function els() {
   return { root: $('player'), media: $('player-media'), track: $('player-track'),
-    listEl: $('player-list'), pp: $('pp'), pv: $('pv'), nx: $('nx'),
+    details: $('player-details'), strip: $('vu-strip'), pp: $('pp'), pv: $('pv'), nx: $('nx'),
     el: $('t-el'), to: $('t-to'), scrub: $('scrub'), counter: $('counter') };
+}
+
+/* -------------------------------------------------------------- VU meter */
+/* Two meters share one extracted logo: `full` on an overlay canvas inside
+   #player-media (bandcamp - the art ghosts behind it), `strip` on #vu-strip
+   below the media box (youtube/soundcloud - their embeds stay untouched).
+   Exactly one is ever running. Every meter path is optional: if the logo
+   fails to load the player runs meterless rather than not at all. */
+let vu = null;          // { full, strip } once bootstrapped
+let vuReady = null;     // in-flight/settled bootstrap promise (one attempt)
+let vuActive = null;    // the meter the transport drives
+let overlay = null;     // the .vu-overlay canvas node
+
+function ensureMeters() {
+  if (vuReady) return vuReady;
+  vuReady = (async () => {
+    const logo = await loadLogo('assets/logo.png');
+    overlay = document.createElement('canvas');
+    overlay.className = 'vu-overlay';
+    overlay.hidden = true;
+    els().media.appendChild(overlay);
+    vu = {
+      full: await createMeter({ canvas: overlay, logo }),
+      strip: await createMeter({ canvas: els().strip, logo }),
+    };
+    return vu;
+  })().catch(err => { console.error('VU meter unavailable', err); vu = null; return null; });
+  return vuReady;
+}
+
+/** The media box owns the overlay canvas; every swap of its contents keeps it. */
+function setMedia(...nodes) {
+  const m = els().media;
+  m.replaceChildren(...nodes);
+  if (overlay) m.appendChild(overlay);   // move, never clone: one canvas, always
+}
+
+function setVuMode(mode) {
+  const e = els();
+  e.root.classList.toggle('vu-full', mode === 'full');
+  if (overlay) overlay.hidden = mode !== 'full';
+  e.strip.hidden = mode !== 'strip';
+}
+
+function stopVu() { vuActive?.stop(); vuActive = null; }
+
+/** Point the right meter at this track's levels. Async and unawaited: a slow
+    envelope fetch must never delay playback, so every step re-checks mySeq. */
+async function wireVu(t, mySeq) {
+  const v = await ensureMeters();
+  if (!v || mySeq !== P.seq) return;
+  let src = null, bands = 24;
+  if (t.envelope) {
+    try {
+      const r = await fetch(t.envelope);
+      if (!r.ok) throw new Error(`envelope ${r.status}`);
+      const json = await r.json();
+      src = envelopeSource(json);
+      bands = Number(json.bands) || 24;
+    } catch (err) {
+      console.error(`envelope load failed: ${t.envelope}`, err);
+      src = null;                        // simulated levels below - never silent
+    }
+  }
+  if (mySeq !== P.seq) return;
+  if (!src) src = simSource((t.rank || 1) * 7919);
+  const mode = t.stream?.type === 'bandcamp' ? 'full' : 'strip';
+  const active = v[mode];
+  (mode === 'full' ? v.strip : v.full).stop();
+  setVuMode(mode);
+  active.setBands(bands);
+  active.setSource(src);
+  vuActive = active;
+  if (P.playing) active.start(() => P.adapter?.time() ?? 0); else active.stop();
+}
+
+/* ---------------------------------------------------------- typing layer */
+let typer = null, typerD = null;
+
+/** Types "ARTIST — TITLE", then the details line 350ms behind it. */
+function typeMeta(t, mySeq) {
+  const e = els();
+  typer?.cancel(); typerD?.cancel(); typerD = null;
+  e.details.textContent = '';
+  typer = typeInto(e.track, `${t.artist} — ${t.title}`);
+  typer.done.then(ok => {
+    if (!ok || mySeq !== P.seq) return;
+    setTimeout(() => {
+      if (mySeq !== P.seq) return;
+      typerD = typeInto(e.details, t.details ?? `${P.list.curator} · ${P.list.listTitle}`);
+    }, 350);
+  });
 }
 
 function markRows() {
@@ -59,15 +152,15 @@ async function loadIndexTrack(idx) {
   if (!t) return;
   P.loading = true;
   P.adapter?.destroy(); P.adapter = null;
+  stopVu();            // the old track's meter must not run against the new one's clock
   P.i = idx; P.userPaused = false;
   const firstOpen = e.root.hidden;
   e.root.hidden = false;
-  e.track.textContent = `${t.artist} — ${t.title}`;
-  e.listEl.textContent = `${P.list.curator} · ${P.list.listTitle}`;
+  typeMeta(t, mySeq);  // types through the load, so the panel is never dead air
   e.counter.textContent = `${idx + 1}/${P.queue.length}`;
   resetBar();
   setPlaying(true); // track will auto-play; pause glyph lets a click during load register pause-intent
-  e.media.replaceChildren(note('LOADING…'));
+  setMedia(note('LOADING…'));
   markRows();
   if (firstOpen || offscreen(e.root)) e.root.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   const ad = adapterFor(t);
@@ -89,17 +182,20 @@ async function loadIndexTrack(idx) {
   if (mySeq !== P.seq) { ad.destroy(); return; }
   P.loading = false;
   P.adapter = ad;
-  e.media.replaceChildren(wrap);
+  setMedia(wrap);
   wrap.classList.add('live');
+  wireVu(t, mySeq);   // unawaited: the meter catches up, playback never waits
   if (!P.userPaused) play(); else updateBar();
 }
 
 function fail(t) {
   P.loading = false;
   P.adapter?.destroy(); P.adapter = null;
+  stopVu();
+  setVuMode(null);   // no art to ghost, no strip: just the note
   const e = els();
   const link = safeUrl(t.stream?.url ?? t.buy?.[0]?.url);
-  e.media.replaceChildren(note(`COULDN'T PLAY THIS ONE HERE${link ?
+  setMedia(note(`COULDN'T PLAY THIS ONE HERE${link ?
     ` — <a href="${esc(link)}" target="_blank" rel="noopener">LISTEN AT THE SOURCE</a>` : ''}`));
   setPlaying(false);
 }
@@ -109,6 +205,7 @@ function setPlaying(on) {
   els().pp.innerHTML = on ? '&#10073;&#10073;' : '&#9654;';
   clearInterval(P.timer);
   if (on) P.timer = setInterval(updateBar, 250);
+  on ? vuActive?.start(() => P.adapter?.time() ?? 0) : vuActive?.stop();
 }
 
 function play() {
