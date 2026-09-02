@@ -31,7 +31,7 @@ function trackRow(t) {
   const buy = t.buy?.[0];
   const buyHref = buy ? safeUrl(buy.url) : '';
   return `
-  <article class="track" data-rank="${esc(t.rank)}">
+  <article class="track${t.stream?.url ? ' playable' : ''}" data-rank="${esc(t.rank)}">
     <span class="rank">${esc(pad2(t.rank))}</span>
     <span class="art">${safeArt(t.art) ? `<img src="${esc(safeArt(t.art))}" loading="lazy" alt="">` : ''}</span>
     <span class="name">${esc(t.artist)} — ${esc(t.title)}</span>
@@ -108,8 +108,9 @@ async function route() {
   }
   if (seq !== state.seq) return;
   state.current = view.list ?? null;
-  window.__currentList = state.current; onRender(state.current);
+  window.__currentList = state.current;
   app.innerHTML = view.html;
+  onRender(state.current);
   document.title = view.title;
   window.scrollTo(0, 0);
 }

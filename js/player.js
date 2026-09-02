@@ -18,10 +18,7 @@ function els() {
 function markRows() {
   const cur = P.queue[P.i];
   document.querySelectorAll('.track').forEach(row => {
-    const rank = Number(row.dataset.rank);
-    const playable = !!P.list && P.queue.some(t => t.rank === rank);
-    row.classList.toggle('playable', playable || !!row.dataset.rank);
-    row.classList.toggle('active', !!cur && P.listShown && rank === cur.rank);
+    row.classList.toggle('active', !!cur && P.listShown && Number(row.dataset.rank) === cur.rank);
   });
 }
 

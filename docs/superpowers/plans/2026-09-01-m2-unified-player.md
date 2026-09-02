@@ -306,6 +306,7 @@ export function bandcampAdapter() {
       audio.addEventListener('ended', () => a.onended?.());
       audio.addEventListener('error', async () => {
         // Signed URL likely expired mid-session: re-resolve once, resume position.
+        if (!audio) return; // destroyed: clearing src fires a trailing error event
         if (retried || !track) { a.onerror?.(new Error('stream error')); return; }
         retried = true;
         const pos = audio.currentTime;
@@ -323,7 +324,7 @@ export function bandcampAdapter() {
     seek: s => { if (audio) audio.currentTime = s; },
     time: () => audio?.currentTime ?? 0,
     duration: () => (audio?.duration || meta?.duration || 0),
-    destroy: () => { if (audio) { audio.pause(); audio.src = ''; audio = null; } },
+    destroy: () => { if (audio) { const el = audio; audio = null; el.pause(); el.src = ''; } },
   };
   return a;
 }
@@ -468,10 +469,7 @@ function els() {
 function markRows() {
   const cur = P.queue[P.i];
   document.querySelectorAll('.track').forEach(row => {
-    const rank = Number(row.dataset.rank);
-    const playable = !!P.list && P.queue.some(t => t.rank === rank);
-    row.classList.toggle('playable', playable || !!row.dataset.rank);
-    row.classList.toggle('active', !!cur && P.listShown && rank === cur.rank);
+    row.classList.toggle('active', !!cur && P.listShown && Number(row.dataset.rank) === cur.rank);
   });
 }
 
@@ -566,7 +564,7 @@ export function initPlayer() {
 
 - [ ] **Step 2: Hook into `js/app.js`** - exactly three edits:
   1. Top: `import { initPlayer, onRender } from './player.js';`
-  2. In `route()`, immediately after `state.current = view.list ?? null;` add: `window.__currentList = state.current; onRender(state.current);`
+  2. In `route()`: `window.__currentList = state.current;` goes right after `state.current = view.list ?? null;`; `onRender(state.current);` goes right after `app.innerHTML = view.html;` (it must see the fresh DOM).
   3. At the bottom, before `route();` add: `initPlayer();`
 
 - [ ] **Step 3: Local integration test** (serve on 8734, browser pane): click row 03 on the jungle list (a Bandcamp track) → player section appears, LOADING…, artwork fills the panel, audio starts, elapsed counts, scrub works (drag to mid-track), pause/resume works, prev restarts then goes back, next advances to 04. Click a grime YouTube row → video visible and playing in the panel, transport controls it. Scrufizzer row 03 (Pulse X, bandcamp) then row 05 (youtube) - transitions clean. Let a short track finish → auto-advance. Navigate to `#/archive` mid-playback → audio keeps playing, transport still works; navigate back → active row re-highlights. Console: no errors (YT logs some benign warnings - note them).

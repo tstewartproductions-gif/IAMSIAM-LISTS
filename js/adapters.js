@@ -21,6 +21,7 @@ export function bandcampAdapter() {
       audio.addEventListener('ended', () => a.onended?.());
       audio.addEventListener('error', async () => {
         // Signed URL likely expired mid-session: re-resolve once, resume position.
+        if (!audio) return; // destroyed: clearing src fires a trailing error event
         if (retried || !track) { a.onerror?.(new Error('stream error')); return; }
         retried = true;
         const pos = audio.currentTime;
@@ -38,7 +39,7 @@ export function bandcampAdapter() {
     seek: s => { if (audio) audio.currentTime = s; },
     time: () => audio?.currentTime ?? 0,
     duration: () => (audio?.duration || meta?.duration || 0),
-    destroy: () => { if (audio) { audio.pause(); audio.src = ''; audio = null; } },
+    destroy: () => { if (audio) { const el = audio; audio = null; el.pause(); el.src = ''; } },
   };
   return a;
 }
