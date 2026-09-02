@@ -1,4 +1,4 @@
-import { initPlayer, onRender } from './player.js';
+import { initPlayer, onRender, isPlayable } from './player.js';
 // IAMSIAM_LISTS - hash router + renderers. No deps, no build.
 const app = document.getElementById('app');
 const state = { seq: 0, index: undefined, lists: Object.create(null), current: null };
@@ -31,7 +31,7 @@ function trackRow(t) {
   const buy = t.buy?.[0];
   const buyHref = buy ? safeUrl(buy.url) : '';
   return `
-  <article class="track${t.stream?.url ? ' playable' : ''}" data-rank="${esc(t.rank)}">
+  <article class="track${isPlayable(t) ? ' playable' : ''}" data-rank="${esc(t.rank)}">
     <span class="rank">${esc(pad2(t.rank))}</span>
     <span class="art">${safeArt(t.art) ? `<img src="${esc(safeArt(t.art))}" loading="lazy" alt="">` : ''}</span>
     <span class="name">${esc(t.artist)} — ${esc(t.title)}</span>
@@ -116,5 +116,5 @@ async function route() {
 }
 
 addEventListener('hashchange', route);
-initPlayer();
 route();
+try { initPlayer(); } catch (err) { console.error(err); }

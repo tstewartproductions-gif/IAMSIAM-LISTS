@@ -6,12 +6,16 @@ const esc = s => String(s ?? '').replace(/[&<>"']/g,
 
 /* ---------- bandcamp: resolved mp3-128 in an <audio> element ---------- */
 export function bandcampAdapter() {
-  let audio = null, meta = null, track = null, retried = false;
+  let audio = null, meta = null, track = null, retried = false, ctrl = null;
   const a = {
-    onended: null, onerror: null,
+    onended: null, onerror: null, onstate: null,
     async mount(t, mediaEl) {
       track = t;
-      const r = await fetch(`${WORKER_URL}/?url=${encodeURIComponent(t.stream.url)}`);
+      ctrl = new AbortController();
+      const timer = setTimeout(() => ctrl.abort(), 12000);
+      let r;
+      try { r = await fetch(`${WORKER_URL}/?url=${encodeURIComponent(t.stream.url)}`, { signal: ctrl.signal }); }
+      finally { clearTimeout(timer); }
       if (!r.ok) throw Object.assign(new Error('resolve failed'), { code: r.status });
       meta = await r.json();
       mediaEl.innerHTML = meta.art ? `<img class="bc-art" src="${esc(meta.art)}" alt="">` : '';
@@ -33,13 +37,15 @@ export function bandcampAdapter() {
           await audio.play();
         } catch (e) { a.onerror?.(e); }
       });
+      audio.addEventListener('play', () => a.onstate?.(true));
+      audio.addEventListener('pause', () => { if (audio && !audio.ended) a.onstate?.(false); });
     },
     play: () => audio?.play().catch(() => a.onerror?.(new Error('playback blocked'))),
     pause: () => audio?.pause(),
     seek: s => { if (audio) audio.currentTime = s; },
     time: () => audio?.currentTime ?? 0,
     duration: () => (audio?.duration || meta?.duration || 0),
-    destroy: () => { if (audio) { const el = audio; audio = null; el.pause(); el.src = ''; } },
+    destroy: () => { ctrl?.abort(); if (audio) { const el = audio; audio = null; el.pause(); el.src = ''; } },
   };
   return a;
 }
@@ -56,18 +62,18 @@ function loadYT() {
     window.onYouTubeIframeAPIReady = () => { prev?.(); clearTimeout(timer); res(); };
     const s = document.createElement('script');
     s.src = 'https://www.youtube.com/iframe_api';
-    s.onerror = () => fail(new Error('youtube api blocked'));
+    s.onerror = () => { s.remove(); fail(new Error('youtube api blocked')); };
     document.head.appendChild(s);
   });
   return ytReady;
 }
 export const ytVideoId = url =>
-  String(url ?? '').match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([\w-]{11})/)?.[1] ?? null;
+  String(url ?? '').match(/(?:youtube(?:-nocookie)?\.com\/(?:watch\?(?:[^#]*&)?v=|shorts\/|embed\/|live\/)|youtu\.be\/)([\w-]{11})/)?.[1] ?? null;
 
 export function youtubeAdapter() {
   let player = null, readyP = null;
   const a = {
-    onended: null, onerror: null,
+    onended: null, onerror: null, onstate: null,
     async mount(t, mediaEl) {
       const id = ytVideoId(t.stream.url);
       if (!id) throw new Error('bad youtube url');
@@ -75,13 +81,18 @@ export function youtubeAdapter() {
       const host = document.createElement('div');
       mediaEl.innerHTML = ''; mediaEl.appendChild(host);
       readyP = new Promise((res, rej) => {
+        const timer = setTimeout(() => rej(new Error('youtube ready timeout')), 15000);
         player = new YT.Player(host, {
           videoId: id, width: '100%', height: '100%',
           playerVars: { playsinline: 1, rel: 0 },
           events: {
-            onReady: () => res(),
-            onError: () => { rej(new Error('youtube error')); a.onerror?.(new Error('youtube error')); },
-            onStateChange: e => { if (e.data === YT.PlayerState.ENDED) a.onended?.(); },
+            onReady: () => { clearTimeout(timer); res(); },
+            onError: () => { clearTimeout(timer); rej(new Error('youtube error')); a.onerror?.(new Error('youtube error')); },
+            onStateChange: e => {
+              if (e.data === YT.PlayerState.ENDED) a.onended?.();
+              else if (e.data === YT.PlayerState.PLAYING) a.onstate?.(true);
+              else if (e.data === YT.PlayerState.PAUSED) a.onstate?.(false);
+            },
           },
         });
       });
@@ -108,7 +119,7 @@ function loadSC() {
     const s = document.createElement('script');
     s.src = 'https://w.soundcloud.com/player/api.js';
     s.onload = () => { clearTimeout(timer); res(); };
-    s.onerror = () => fail(new Error('soundcloud api blocked'));
+    s.onerror = () => { s.remove(); fail(new Error('soundcloud api blocked')); };
     document.head.appendChild(s);
   });
   return scReady;
@@ -117,7 +128,7 @@ function loadSC() {
 export function soundcloudAdapter() {
   let widget = null, dur = 0, pos = 0;
   const a = {
-    onended: null, onerror: null,
+    onended: null, onerror: null, onstate: null,
     async mount(t, mediaEl) {
       await loadSC();
       const src = 'https://w.soundcloud.com/player/?url=' + encodeURIComponent(t.stream.url) +
@@ -132,6 +143,8 @@ export function soundcloudAdapter() {
           widget.bind(SC.Widget.Events.PLAY_PROGRESS, e => { pos = e.currentPosition / 1000; });
           widget.bind(SC.Widget.Events.FINISH, () => a.onended?.());
           widget.bind(SC.Widget.Events.ERROR, () => a.onerror?.(new Error('soundcloud error')));
+          widget.bind(SC.Widget.Events.PLAY, () => a.onstate?.(true));
+          widget.bind(SC.Widget.Events.PAUSE, () => a.onstate?.(false));
           res();
         });
       });
