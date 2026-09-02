@@ -65,7 +65,7 @@ async function loadIndexTrack(idx) {
   e.listEl.textContent = `${P.list.curator} · ${P.list.listTitle}`;
   e.counter.textContent = `${idx + 1}/${P.queue.length}`;
   resetBar();
-  setPlaying(false);
+  setPlaying(true); // track will auto-play; pause glyph lets a click during load register pause-intent
   e.media.replaceChildren(note('LOADING…'));
   markRows();
   if (firstOpen || offscreen(e.root)) e.root.scrollIntoView({ behavior: 'smooth', block: 'nearest' });

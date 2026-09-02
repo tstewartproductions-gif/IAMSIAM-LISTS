@@ -140,7 +140,7 @@ export function soundcloudAdapter() {
         widget.bind(SC.Widget.Events.READY, () => {
           clearTimeout(timer);
           widget.getDuration(ms => { dur = ms / 1000; });
-          widget.bind(SC.Widget.Events.PLAY_PROGRESS, e => { pos = e.currentPosition / 1000; });
+          widget.bind(SC.Widget.Events.PLAY_PROGRESS, e => { pos = e.currentPosition / 1000; if (!dur) widget.getDuration(ms => { dur = ms / 1000; }); });
           widget.bind(SC.Widget.Events.FINISH, () => a.onended?.());
           widget.bind(SC.Widget.Events.ERROR, () => a.onerror?.(new Error('soundcloud error')));
           widget.bind(SC.Widget.Events.PLAY, () => a.onstate?.(true));
@@ -154,7 +154,10 @@ export function soundcloudAdapter() {
     seek: s => { widget?.seekTo(s * 1000); pos = s; },
     time: () => pos,
     duration: () => dur,
-    destroy: () => { widget = null; },
+    destroy: () => {
+      if (widget) { for (const ev of ['READY', 'PLAY', 'PAUSE', 'PLAY_PROGRESS', 'FINISH', 'ERROR']) { try { widget.unbind(SC.Widget.Events[ev]); } catch {} } }
+      widget = null;
+    },
   };
   return a;
 }

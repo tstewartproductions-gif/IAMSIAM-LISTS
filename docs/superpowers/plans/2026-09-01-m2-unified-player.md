@@ -291,12 +291,16 @@ const esc = s => String(s ?? '').replace(/[&<>"']/g,
 
 /* ---------- bandcamp: resolved mp3-128 in an <audio> element ---------- */
 export function bandcampAdapter() {
-  let audio = null, meta = null, track = null, retried = false;
+  let audio = null, meta = null, track = null, retried = false, ctrl = null;
   const a = {
-    onended: null, onerror: null,
+    onended: null, onerror: null, onstate: null,
     async mount(t, mediaEl) {
       track = t;
-      const r = await fetch(`${WORKER_URL}/?url=${encodeURIComponent(t.stream.url)}`);
+      ctrl = new AbortController();
+      const timer = setTimeout(() => ctrl.abort(), 12000);
+      let r;
+      try { r = await fetch(`${WORKER_URL}/?url=${encodeURIComponent(t.stream.url)}`, { signal: ctrl.signal }); }
+      finally { clearTimeout(timer); }
       if (!r.ok) throw Object.assign(new Error('resolve failed'), { code: r.status });
       meta = await r.json();
       mediaEl.innerHTML = meta.art ? `<img class="bc-art" src="${esc(meta.art)}" alt="">` : '';
@@ -318,13 +322,15 @@ export function bandcampAdapter() {
           await audio.play();
         } catch (e) { a.onerror?.(e); }
       });
+      audio.addEventListener('play', () => a.onstate?.(true));
+      audio.addEventListener('pause', () => { if (audio && !audio.ended) a.onstate?.(false); });
     },
     play: () => audio?.play().catch(() => a.onerror?.(new Error('playback blocked'))),
     pause: () => audio?.pause(),
     seek: s => { if (audio) audio.currentTime = s; },
     time: () => audio?.currentTime ?? 0,
     duration: () => (audio?.duration || meta?.duration || 0),
-    destroy: () => { if (audio) { const el = audio; audio = null; el.pause(); el.src = ''; } },
+    destroy: () => { ctrl?.abort(); if (audio) { const el = audio; audio = null; el.pause(); el.src = ''; } },
   };
   return a;
 }
@@ -341,18 +347,18 @@ function loadYT() {
     window.onYouTubeIframeAPIReady = () => { prev?.(); clearTimeout(timer); res(); };
     const s = document.createElement('script');
     s.src = 'https://www.youtube.com/iframe_api';
-    s.onerror = () => fail(new Error('youtube api blocked'));
+    s.onerror = () => { s.remove(); fail(new Error('youtube api blocked')); };
     document.head.appendChild(s);
   });
   return ytReady;
 }
 export const ytVideoId = url =>
-  String(url ?? '').match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([\w-]{11})/)?.[1] ?? null;
+  String(url ?? '').match(/(?:youtube(?:-nocookie)?\.com\/(?:watch\?(?:[^#]*&)?v=|shorts\/|embed\/|live\/)|youtu\.be\/)([\w-]{11})/)?.[1] ?? null;
 
 export function youtubeAdapter() {
   let player = null, readyP = null;
   const a = {
-    onended: null, onerror: null,
+    onended: null, onerror: null, onstate: null,
     async mount(t, mediaEl) {
       const id = ytVideoId(t.stream.url);
       if (!id) throw new Error('bad youtube url');
@@ -360,13 +366,18 @@ export function youtubeAdapter() {
       const host = document.createElement('div');
       mediaEl.innerHTML = ''; mediaEl.appendChild(host);
       readyP = new Promise((res, rej) => {
+        const timer = setTimeout(() => rej(new Error('youtube ready timeout')), 15000);
         player = new YT.Player(host, {
           videoId: id, width: '100%', height: '100%',
           playerVars: { playsinline: 1, rel: 0 },
           events: {
-            onReady: () => res(),
-            onError: () => { rej(new Error('youtube error')); a.onerror?.(new Error('youtube error')); },
-            onStateChange: e => { if (e.data === YT.PlayerState.ENDED) a.onended?.(); },
+            onReady: () => { clearTimeout(timer); res(); },
+            onError: () => { clearTimeout(timer); rej(new Error('youtube error')); a.onerror?.(new Error('youtube error')); },
+            onStateChange: e => {
+              if (e.data === YT.PlayerState.ENDED) a.onended?.();
+              else if (e.data === YT.PlayerState.PLAYING) a.onstate?.(true);
+              else if (e.data === YT.PlayerState.PAUSED) a.onstate?.(false);
+            },
           },
         });
       });
@@ -393,7 +404,7 @@ function loadSC() {
     const s = document.createElement('script');
     s.src = 'https://w.soundcloud.com/player/api.js';
     s.onload = () => { clearTimeout(timer); res(); };
-    s.onerror = () => fail(new Error('soundcloud api blocked'));
+    s.onerror = () => { s.remove(); fail(new Error('soundcloud api blocked')); };
     document.head.appendChild(s);
   });
   return scReady;
@@ -402,7 +413,7 @@ function loadSC() {
 export function soundcloudAdapter() {
   let widget = null, dur = 0, pos = 0;
   const a = {
-    onended: null, onerror: null,
+    onended: null, onerror: null, onstate: null,
     async mount(t, mediaEl) {
       await loadSC();
       const src = 'https://w.soundcloud.com/player/?url=' + encodeURIComponent(t.stream.url) +
@@ -414,9 +425,11 @@ export function soundcloudAdapter() {
         widget.bind(SC.Widget.Events.READY, () => {
           clearTimeout(timer);
           widget.getDuration(ms => { dur = ms / 1000; });
-          widget.bind(SC.Widget.Events.PLAY_PROGRESS, e => { pos = e.currentPosition / 1000; });
+          widget.bind(SC.Widget.Events.PLAY_PROGRESS, e => { pos = e.currentPosition / 1000; if (!dur) widget.getDuration(ms => { dur = ms / 1000; }); });
           widget.bind(SC.Widget.Events.FINISH, () => a.onended?.());
           widget.bind(SC.Widget.Events.ERROR, () => a.onerror?.(new Error('soundcloud error')));
+          widget.bind(SC.Widget.Events.PLAY, () => a.onstate?.(true));
+          widget.bind(SC.Widget.Events.PAUSE, () => a.onstate?.(false));
           res();
         });
       });
@@ -426,7 +439,10 @@ export function soundcloudAdapter() {
     seek: s => { widget?.seekTo(s * 1000); pos = s; },
     time: () => pos,
     duration: () => dur,
-    destroy: () => { widget = null; },
+    destroy: () => {
+      if (widget) { for (const ev of ['READY', 'PLAY', 'PAUSE', 'PLAY_PROGRESS', 'FINISH', 'ERROR']) { try { widget.unbind(SC.Widget.Events[ev]); } catch {} } }
+      widget = null;
+    },
   };
   return a;
 }
@@ -454,10 +470,16 @@ import { adapterFor } from './adapters.js';
 
 const $ = id => document.getElementById(id);
 const fmt = s => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
+const esc = s => String(s ?? '').replace(/[&<>"']/g,
+  c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const safeUrl = u => /^https?:\/\//i.test(String(u ?? '')) ? String(u) : '';
+
+const SUPPORTED = ['bandcamp', 'youtube', 'soundcloud'];
+export const isPlayable = t => !!t?.stream?.url && SUPPORTED.includes(t.stream.type);
 
 const P = {
-  list: null, queue: [], i: -1, adapter: null, playing: false,
-  seq: 0, timer: null, scrubbing: false,
+  list: null, queue: [], i: -1, adapter: null, playing: false, listShown: false,
+  seq: 0, timer: null, scrubbing: false, userPaused: false,
 };
 
 function els() {
@@ -481,37 +503,68 @@ function updateBar() {
   if (!P.scrubbing && d > 0) e.scrub.value = Math.round((t / d) * 1000);
 }
 
+function resetBar() {
+  const e = els();
+  e.el.textContent = '0:00'; e.to.textContent = '0:00'; e.scrub.value = 0;
+}
+
+function note(html) {
+  const d = document.createElement('div');
+  d.className = 'player-note';
+  d.innerHTML = html;
+  return d;
+}
+
+function offscreen(el) {
+  const r = el.getBoundingClientRect();
+  return r.bottom < 0 || r.top > window.innerHeight;
+}
+
 async function loadIndexTrack(idx) {
   const mySeq = ++P.seq;
   const e = els(); const t = P.queue[idx];
   if (!t) return;
-  P.adapter?.destroy(); P.adapter = null; P.i = idx;
+  P.adapter?.destroy(); P.adapter = null;
+  P.i = idx; P.userPaused = false;
+  const firstOpen = e.root.hidden;
   e.root.hidden = false;
   e.track.textContent = `${t.artist} — ${t.title}`;
   e.listEl.textContent = `${P.list.curator} · ${P.list.listTitle}`;
   e.counter.textContent = `${idx + 1}/${P.queue.length}`;
-  e.media.innerHTML = `<div class="player-note">LOADING…</div>`;
+  resetBar();
+  setPlaying(true); // track will auto-play; pause glyph lets a click during load register pause-intent
+  e.media.replaceChildren(note('LOADING…'));
   markRows();
+  if (firstOpen || offscreen(e.root)) e.root.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   const ad = adapterFor(t);
-  ad.onended = () => next();
-  ad.onerror = () => fail(t);
+  if (!ad) { fail(t); return; }
+  ad.onended = () => { if (mySeq === P.seq) next(); };
+  ad.onerror = () => { if (mySeq === P.seq) fail(t); };
+  ad.onstate = on => { if (mySeq === P.seq) setPlaying(on); };
+  const wrap = document.createElement('div');
+  wrap.className = 'mount';
+  e.media.appendChild(wrap);
   try {
-    await ad.mount(t, e.media);
+    await ad.mount(t, wrap);
   } catch (err) {
     console.error(err);
+    ad.destroy();
     if (mySeq === P.seq) fail(t);
     return;
   }
   if (mySeq !== P.seq) { ad.destroy(); return; }
   P.adapter = ad;
-  play();
+  e.media.replaceChildren(wrap);
+  wrap.classList.add('live');
+  if (!P.userPaused) play(); else updateBar();
 }
 
 function fail(t) {
+  P.adapter?.destroy(); P.adapter = null;
   const e = els();
-  const link = t.stream?.url ?? t.buy?.[0]?.url;
-  e.media.innerHTML = `<div class="player-note">COULDN'T PLAY THIS ONE HERE${link ?
-    ` — <a href="${link.replace(/"/g, '&quot;')}" target="_blank" rel="noopener">LISTEN AT THE SOURCE</a>` : ''}</div>`;
+  const link = safeUrl(t.stream?.url ?? t.buy?.[0]?.url);
+  e.media.replaceChildren(note(`COULDN'T PLAY THIS ONE HERE${link ?
+    ` — <a href="${esc(link)}" target="_blank" rel="noopener">LISTEN AT THE SOURCE</a>` : ''}`));
   setPlaying(false);
 }
 
@@ -522,13 +575,14 @@ function setPlaying(on) {
   if (on) P.timer = setInterval(updateBar, 250);
 }
 
-function play() { P.adapter?.play(); setPlaying(true); updateBar(); }
-function pause() { P.adapter?.pause(); setPlaying(false); }
+function play() { if (!P.adapter) return; P.userPaused = false; P.adapter.play(); setPlaying(true); updateBar(); }
+function pause() { P.userPaused = true; if (P.adapter) P.adapter.pause(); setPlaying(false); }
 function next() { if (P.i < P.queue.length - 1) loadIndexTrack(P.i + 1); else setPlaying(false); }
 function prev() { if (P.adapter && P.adapter.time() > 3) { P.adapter.seek(0); return; } if (P.i > 0) loadIndexTrack(P.i - 1); }
 
 export function playTrack(list, rank) {
-  const queue = list.tracks.filter(t => t.stream?.url);
+  if (P.list === list && P.queue[P.i]?.rank === rank) { P.playing ? pause() : play(); return; }
+  const queue = list.tracks.filter(isPlayable);
   const idx = queue.findIndex(t => t.rank === rank);
   if (idx === -1) return;
   P.list = list; P.queue = queue; P.listShown = true;
@@ -569,6 +623,8 @@ export function initPlayer() {
 
 - [ ] **Step 3: Local integration test** (serve on 8734, browser pane): click row 03 on the jungle list (a Bandcamp track) → player section appears, LOADING…, artwork fills the panel, audio starts, elapsed counts, scrub works (drag to mid-track), pause/resume works, prev restarts then goes back, next advances to 04. Click a grime YouTube row → video visible and playing in the panel, transport controls it. Scrufizzer row 03 (Pulse X, bandcamp) then row 05 (youtube) - transitions clean. Let a short track finish → auto-advance. Navigate to `#/archive` mid-playback → audio keeps playing, transport still works; navigate back → active row re-highlights. Console: no errors (YT logs some benign warnings - note them).
 - [ ] **Step 4:** Commit `"feat: unified player - transport, queue, row wiring"`. Push and spot-check on the LIVE site (this is the first push where the player is active).
+
+**Task 5/6 amendments (adopted 2026-09-01 after opus review of the full stack, code blocks above re-synced from committed files):** mount ownership via per-mount hidden containers committed only after the seq check (fixes the interleaved-mount clobber); unsupported `stream.type` guarded at three layers (isPlayable-driven playable class, queue filter, null-adapter fail); seq-guarded onended/onerror/onstate; destroy on every exit path incl. fail(); abortable 12s resolver fetch + 15s YT-ready timeout; transport syncs with the embeds' own controls via adapter onstate (YT PLAYING/PAUSED, SC PLAY/PAUSE, audio play/pause events); loading state shows the pause glyph so pause-intent during load registers (userPaused honored at mount commit); same-track click toggles play/pause (also dedupes double-clicks); scrub/time reset per track + SC duration retried until nonzero; scroll-into-view when the panel is offscreen; 24px scrub hit area + 44px-class mobile buttons; fail() uses safeUrl+esc; ytVideoId widened (shorts/embed/live/nocookie); script loaders remove failed tags; initPlayer wrapped after route(). Deviations accepted: no official-embed fallback yet (note+link only; worker returns trackId so it stays cheap insurance for later), no auto-skip on fail (a worker outage would race through the list). KNOWN: local YouTube testing is non-predictive (most embeds 150-error from localhost but play from the deployed origin) - all YT verification happens live.
 
 ---
 
