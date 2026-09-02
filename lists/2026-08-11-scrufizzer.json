@@ -58,7 +58,8 @@
           "platform": "beatport",
           "url": "https://www.beatport.com/track/pulse-x-original-mix/10888496"
         }
-      ]
+      ],
+      "envelope": "env/2026-08-11/03.json"
     },
     {
       "rank": 4,
@@ -80,7 +81,8 @@
           "platform": "beatport",
           "url": "https://www.beatport.com/track/functions-on-the-low/12209197"
         }
-      ]
+      ],
+      "envelope": "env/2026-08-11/04.json"
     },
     {
       "rank": 5,

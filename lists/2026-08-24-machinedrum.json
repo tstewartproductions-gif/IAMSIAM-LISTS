@@ -26,7 +26,8 @@
           "platform": "bleep",
           "url": "https://bleep.com/release/30211-africa-hitech-out-in-the-streets-vip"
         }
-      ]
+      ],
+      "envelope": "env/2026-08-24/01.json"
     },
     {
       "rank": 2,
@@ -68,7 +69,8 @@
           "platform": "bleep",
           "url": "https://bleep.com/release/44779-dj-rashad-i-dont-give-a-fuck"
         }
-      ]
+      ],
+      "envelope": "env/2026-08-24/03.json"
     },
     {
       "rank": 4,
@@ -89,7 +91,8 @@
           "platform": "beatport",
           "url": "https://www.beatport.com/track/ive-seen/9950849"
         }
-      ]
+      ],
+      "envelope": "env/2026-08-24/04.json"
     },
     {
       "rank": 5,
@@ -114,7 +117,8 @@
           "platform": "bleep",
           "url": "https://bleep.com/release/13401-various-artists-we-are-reasonable-people"
         }
-      ]
+      ],
+      "envelope": "env/2026-08-24/05.json"
     },
     {
       "rank": 6,
@@ -131,7 +135,8 @@
           "platform": "bandcamp",
           "url": "https://audarecords.bandcamp.com/track/roctheboat-break-flip"
         }
-      ]
+      ],
+      "envelope": "env/2026-08-24/06.json"
     },
     {
       "rank": 8,
@@ -152,7 +157,8 @@
           "platform": "beatport",
           "url": "https://www.beatport.com/track/the-real/28421467"
         }
-      ]
+      ],
+      "envelope": "env/2026-08-24/08.json"
     },
     {
       "rank": 9,
@@ -173,7 +179,8 @@
           "platform": "beatport",
           "url": "https://www.beatport.com/track/go-again/17534633"
         }
-      ]
+      ],
+      "envelope": "env/2026-08-24/09.json"
     },
     {
       "rank": 10,
@@ -198,7 +205,8 @@
           "platform": "bandcamp",
           "url": "https://fracture.bandcamp.com/album/clissold-the-limit-2024-reissue"
         }
-      ]
+      ],
+      "envelope": "env/2026-08-24/10.json"
     }
   ]
 }
