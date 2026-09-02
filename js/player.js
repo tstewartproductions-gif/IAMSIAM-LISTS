@@ -182,7 +182,11 @@ async function loadIndexTrack(idx) {
   if (mySeq !== P.seq) { ad.destroy(); return; }
   P.loading = false;
   P.adapter = ad;
-  setMedia(wrap);
+  // Keep wrap attached in place: re-attaching would reload its iframe and orphan
+  // the SC/YT widget's event stream. Remove the loading note and stale siblings instead.
+  for (const c of [...els().media.children]) {
+    if (c !== wrap && !c.classList?.contains('vu-overlay')) c.remove();
+  }
   wrap.classList.add('live');
   wireVu(t, mySeq);   // unawaited: the meter catches up, playback never waits
   if (!P.userPaused) play(); else updateBar();
