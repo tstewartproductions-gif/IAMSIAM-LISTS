@@ -13,7 +13,7 @@ export function parseTrackPage(html) {
   const art = html.match(/property="og:image" content="([^"]*)"/)?.[1] ?? null;
   return {
     streamUrl,
-    title: t.title ?? data?.current?.title ?? '',
+    title: data?.current?.title ?? t.title ?? '',
     artist: data?.artist ?? '',
     duration: Math.round(t.duration ?? 0),
     trackId: t.track_id ?? data?.current?.id ?? null,
