@@ -201,13 +201,13 @@ Expected: first call returns `streamUrl` on `bcbits.com` + title "Survival Skill
 ### Task 3: Cloudflare auth + deploy (needs Travis once)
 
 - [ ] **Step 1:** `cd worker && npx -y wrangler whoami` - if not authenticated: run `npx wrangler login` (background, capture the printed URL), give Travis the URL to click Allow (he creates a free account at dash.cloudflare.com/sign-up first if needed). Wait for completion like the gh device flow.
-- [ ] **Step 2:** `npx wrangler deploy` from `worker/`. Capture the deployed URL (`https://iamsiam-resolver.<subdomain>.workers.dev`).
+- [ ] **Step 2:** `npx wrangler deploy` from `worker/`. Capture the deployed URL (deployed 2026-09-01: `https://iamsiam-resolver.iamsiam.workers.dev`, account subdomain `iamsiam.workers.dev`).
 - [ ] **Step 3:** Re-run the Task 2 Step 3 curls against the deployed URL - same expectations, plus confirm the `Access-Control-Allow-Origin: *` header is present (`curl -sI`).
 - [ ] **Step 4: Write `js/config.js`** with the real URL:
 
 ```js
 // js/config.js
-export const WORKER_URL = 'https://iamsiam-resolver.<subdomain>.workers.dev';
+export const WORKER_URL = 'https://iamsiam-resolver.iamsiam.workers.dev';
 ```
 
 - [ ] **Step 5: Commit** - `git add js/config.js && git commit -m "feat: resolver endpoint config"` (worker/ deploy state lives at Cloudflare; no repo change beyond config).
