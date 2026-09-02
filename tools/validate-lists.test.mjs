@@ -403,3 +403,20 @@ test('CLI: duplicate slugs in index.json exits 1', () => {
     rmSync(dir, { recursive: true, force: true });
   }
 });
+
+test('file-type stream accepts a repo-relative path', () => {
+  const l = { curator: 'x', listTitle: 'y', date: '2026-08-24', tracks: [{ rank: 1, artist: 'A', title: 'T',
+    stream: { type: 'file', url: 'audio/2026-08-24/02.mp3' },
+    buy: [{ platform: 'bandcamp', url: 'https://x.bandcamp.com/track/t' }] }] };
+  assert.deepEqual(validateList(l).errors, []);
+});
+
+test('file-type stream rejects urls and path tricks', () => {
+  const base = () => ({ curator: 'x', listTitle: 'y', date: '2026-08-24', tracks: [{ rank: 1, artist: 'A', title: 'T',
+    stream: { type: 'file', url: 'https://evil.example/a.mp3' }, buy: [] }] });
+  assert.match(validateList(base()).errors.join(' '), /repo-relative/);
+  const l2 = base(); l2.tracks[0].stream.url = '/etc/passwd';
+  assert.match(validateList(l2).errors.join(' '), /repo-relative/);
+  const l3 = base(); l3.tracks[0].stream.url = 'audio//x.mp3';
+  assert.match(validateList(l3).errors.join(' '), /repo-relative/);
+});

@@ -50,6 +50,31 @@ export function bandcampAdapter() {
   return a;
 }
 
+/* ---------- self-hosted file: plain <audio>, no resolver needed ---------- */
+export function fileAdapter() {
+  let audio = null;
+  const a = {
+    onended: null, onerror: null, onstate: null,
+    async mount(t, mediaEl) {
+      mediaEl.innerHTML = t.art ? `<img class="bc-art" src="${esc(t.art)}" alt="">` : '';
+      audio = new Audio();
+      audio.src = t.stream.url;
+      audio.preload = 'auto';
+      audio.addEventListener('ended', () => a.onended?.());
+      audio.addEventListener('error', () => { if (audio) a.onerror?.(new Error('audio error')); });
+      audio.addEventListener('play', () => a.onstate?.(true));
+      audio.addEventListener('pause', () => { if (audio && !audio.ended) a.onstate?.(false); });
+    },
+    play: () => audio?.play().catch(() => a.onerror?.(new Error('playback blocked'))),
+    pause: () => audio?.pause(),
+    seek: s => { if (audio) audio.currentTime = s; },
+    time: () => audio?.currentTime ?? 0,
+    duration: () => audio?.duration || 0,
+    destroy: () => { if (audio) { const el = audio; audio = null; el.pause(); el.src = ''; } },
+  };
+  return a;
+}
+
 /* ---------- youtube: official IFrame API, player visible (ToS) ---------- */
 let ytReady = null;
 function loadYT() {
@@ -169,6 +194,7 @@ export function soundcloudAdapter() {
 
 export const adapterFor = t =>
   t?.stream?.type === 'bandcamp' ? bandcampAdapter()
+  : t?.stream?.type === 'file' ? fileAdapter()
   : t?.stream?.type === 'youtube' ? youtubeAdapter()
   : t?.stream?.type === 'soundcloud' ? soundcloudAdapter()
   : null;

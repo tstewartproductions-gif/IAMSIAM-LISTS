@@ -1,6 +1,6 @@
 // IAMSIAM_LISTS - unified transport over the current list's playable tracks.
 import { adapterFor } from './adapters.js';
-import { loadLogo, createMeter, envelopeSource, simSource, typeInto } from './iamsiam-vu.js';
+import { loadLogo, createMeter, envelopeSource, typeInto } from './iamsiam-vu.js';
 
 const $ = id => document.getElementById(id);
 const fmt = s => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
@@ -8,7 +8,8 @@ const esc = s => String(s ?? '').replace(/[&<>"']/g,
   c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const safeUrl = u => /^https?:\/\//i.test(String(u ?? '')) ? String(u) : '';
 
-const SUPPORTED = ['bandcamp', 'youtube', 'soundcloud'];
+const SUPPORTED = ['bandcamp', 'youtube', 'soundcloud', 'file'];
+const AUDIO_TYPES = ['bandcamp', 'file']; // streams played in our own <audio> - the only ones the meter runs for
 export const isPlayable = t => !!t?.stream?.url && SUPPORTED.includes(t.stream.type);
 
 const P = {
@@ -18,17 +19,17 @@ const P = {
 
 function els() {
   return { root: $('player'), media: $('player-media'), track: $('player-track'),
-    details: $('player-details'), strip: $('vu-strip'), pp: $('pp'), pv: $('pv'), nx: $('nx'),
+    details: $('player-details'), pp: $('pp'), pv: $('pv'), nx: $('nx'),
     el: $('t-el'), to: $('t-to'), scrub: $('scrub'), counter: $('counter') };
 }
 
 /* -------------------------------------------------------------- VU meter */
-/* Two meters share one extracted logo: `full` on an overlay canvas inside
-   #player-media (bandcamp - the art ghosts behind it), `strip` on #vu-strip
-   below the media box (youtube/soundcloud - their embeds stay untouched).
-   Exactly one is ever running. Every meter path is optional: if the logo
-   fails to load the player runs meterless rather than not at all. */
-let vu = null;          // { full, strip } once bootstrapped
+/* One meter, one place: the overlay canvas inside #player-media, same size and
+   position for every track (Travis, 2026-09-02). It runs ONLY with a real baked
+   envelope on an audio-element stream (bandcamp/file) - no simulated meters.
+   Embed tracks (youtube/soundcloud) show no meter until they get self-hosted
+   audio. If the logo fails to load the player runs meterless rather than not at all. */
+let vu = null;          // { full } once bootstrapped
 let vuReady = null;     // in-flight/settled bootstrap promise (one attempt)
 let vuActive = null;    // the meter the transport drives
 let overlay = null;     // the .vu-overlay canvas node
@@ -41,10 +42,7 @@ function ensureMeters() {
     overlay.className = 'vu-overlay';
     overlay.hidden = true;
     els().media.appendChild(overlay);
-    vu = {
-      full: await createMeter({ canvas: overlay, logo }),
-      strip: await createMeter({ canvas: els().strip, logo }),
-    };
+    vu = { full: await createMeter({ canvas: overlay, logo }) };
     return vu;
   })().catch(err => { console.error('VU meter unavailable', err); vu = null; return null; });
   return vuReady;
@@ -58,42 +56,37 @@ function setMedia(...nodes) {
 }
 
 function setVuMode(mode) {
-  const e = els();
-  e.root.classList.toggle('vu-full', mode === 'full');
+  els().root.classList.toggle('vu-full', mode === 'full');
   if (overlay) overlay.hidden = mode !== 'full';
-  e.strip.hidden = mode !== 'strip';
 }
 
 function stopVu() { vuActive?.stop(); vuActive = null; }
 
-/** Point the right meter at this track's levels. Async and unawaited: a slow
-    envelope fetch must never delay playback, so every step re-checks mySeq. */
+/** Point the meter at this track's levels. Async and unawaited: a slow envelope
+    fetch must never delay playback, so every step re-checks mySeq. Real envelope
+    or no meter at all - a fake meter is worse than none (Travis, 2026-09-02). */
 async function wireVu(t, mySeq) {
+  if (!t.envelope || !AUDIO_TYPES.includes(t.stream?.type)) { setVuMode(null); return; }
   const v = await ensureMeters();
   if (!v || mySeq !== P.seq) return;
-  let src = null, bands = 24;
-  if (t.envelope) {
-    try {
-      const r = await fetch(t.envelope);
-      if (!r.ok) throw new Error(`envelope ${r.status}`);
-      const json = await r.json();
-      src = envelopeSource(json);
-      bands = Number(json.bands) || 24;
-    } catch (err) {
-      console.error(`envelope load failed: ${t.envelope}`, err);
-      src = null;                        // simulated levels below - never silent
-    }
+  let src, bands;
+  try {
+    const r = await fetch(t.envelope);
+    if (!r.ok) throw new Error(`envelope ${r.status}`);
+    const json = await r.json();
+    src = envelopeSource(json);
+    bands = Number(json.bands) || 24;
+  } catch (err) {
+    console.error(`envelope load failed: ${t.envelope}`, err);
+    if (mySeq === P.seq) setVuMode(null);
+    return;
   }
   if (mySeq !== P.seq) return;
-  if (!src) src = simSource((t.rank || 1) * 7919);
-  const mode = t.stream?.type === 'bandcamp' ? 'full' : 'strip';
-  const active = v[mode];
-  (mode === 'full' ? v.strip : v.full).stop();
-  setVuMode(mode);
-  active.setBands(bands);
-  active.setSource(src);
-  vuActive = active;
-  if (P.playing) active.start(() => P.adapter?.time() ?? 0); else active.stop();
+  setVuMode('full');
+  v.full.setBands(bands);
+  v.full.setSource(src);
+  vuActive = v.full;
+  if (P.playing) vuActive.start(() => P.adapter?.time() ?? 0); else vuActive.stop();
 }
 
 /* ---------------------------------------------------------- typing layer */
@@ -196,7 +189,7 @@ function fail(t) {
   P.loading = false;
   P.adapter?.destroy(); P.adapter = null;
   stopVu();
-  setVuMode(null);   // no art to ghost, no strip: just the note
+  setVuMode(null);   // no meter over the failure note
   const e = els();
   const link = safeUrl(t.stream?.url ?? t.buy?.[0]?.url);
   setMedia(note(`COULDN'T PLAY THIS ONE HERE${link ?

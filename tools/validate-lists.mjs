@@ -8,8 +8,10 @@ import { readFileSync, readdirSync, existsSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 
-const STREAM_TYPES = ['bandcamp', 'soundcloud', 'youtube', 'other'];
+const STREAM_TYPES = ['bandcamp', 'soundcloud', 'youtube', 'file', 'other'];
 const isUrl = u => typeof u === 'string' && /^https?:\/\/.+/.test(u);
+// Self-hosted audio ('file' streams) lives at a repo-relative path, not a URL.
+const isRelPath = p => typeof p === 'string' && /^[\w][\w./-]*$/.test(p) && !p.includes('//');
 const isText = v => typeof v === 'string' && v.trim() !== '';
 
 // Format check (YYYY-MM-DD) plus a calendar round-trip so "2026-13-45" errors
@@ -89,7 +91,9 @@ export function validateList(list) {
     } else {
       if (!STREAM_TYPES.includes(t.stream.type))
         errors.push(`${at}: stream.type must be one of ${STREAM_TYPES.join('|')}`);
-      if (!isUrl(t.stream.url)) errors.push(`${at}: stream.url must be http(s) url`);
+      if (t.stream.type === 'file') {
+        if (!isRelPath(t.stream.url)) errors.push(`${at}: stream.url must be a repo-relative path for type file`);
+      } else if (!isUrl(t.stream.url)) errors.push(`${at}: stream.url must be http(s) url`);
     }
 
     // buy: missing or non-array is an error; a present-but-empty array is only a warning.
@@ -246,6 +250,9 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
           if (t[field] && !existsSync(path.join(root, t[field])))
             warn(slug, `track ${i + 1}: ${field} file not found: ${t[field]}`);
         }
+        // A self-hosted audio file that doesn't exist means the track cannot play: hard error.
+        if (t.stream?.type === 'file' && isRelPath(t.stream.url) && !existsSync(path.join(root, t.stream.url)))
+          err(slug, `track ${i + 1}: audio file not found: ${t.stream.url}`);
       }
     }
 
