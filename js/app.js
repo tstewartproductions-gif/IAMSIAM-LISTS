@@ -1,3 +1,4 @@
+import { initPlayer, onRender } from './player.js';
 // IAMSIAM_LISTS - hash router + renderers. No deps, no build.
 const app = document.getElementById('app');
 const state = { seq: 0, index: undefined, lists: Object.create(null), current: null };
@@ -107,10 +108,12 @@ async function route() {
   }
   if (seq !== state.seq) return;
   state.current = view.list ?? null;
+  window.__currentList = state.current; onRender(state.current);
   app.innerHTML = view.html;
   document.title = view.title;
   window.scrollTo(0, 0);
 }
 
 addEventListener('hashchange', route);
+initPlayer();
 route();
