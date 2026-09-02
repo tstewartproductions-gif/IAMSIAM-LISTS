@@ -15,7 +15,7 @@ export default {
 
     const cache = caches.default;
     const cacheKey = new Request(new URL(request.url).origin + '/?url=' + encodeURIComponent(target));
-    const hit = await cache.match(cacheKey);
+    let hit; try { hit = await cache.match(cacheKey); } catch {}
     if (hit) return hit;
 
     let page;
@@ -34,7 +34,7 @@ export default {
     }
     // Signed stream URLs expire after ~hours; cache briefly so repeat plays are instant.
     const res = json(payload, 200, { 'Cache-Control': 'public, s-maxage=1200' });
-    await cache.put(cacheKey, res.clone());
+    try { await cache.put(cacheKey, res.clone()); } catch {}
     return res;
   },
 };
