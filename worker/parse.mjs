@@ -6,7 +6,9 @@ const decodeEntities = s => s.replace(/&(?:quot|amp|lt|gt|#39);/g, m => ENT[m]);
 export function parseTrackPage(html) {
   const m = html.match(/data-tralbum="([^"]*)"/);
   if (!m) throw new Error('no data-tralbum on page');
-  const data = JSON.parse(decodeEntities(m[1]));
+  let data;
+  try { data = JSON.parse(decodeEntities(m[1])); }
+  catch { throw new Error('malformed data-tralbum JSON'); }
   const t = data?.trackinfo?.[0];
   const streamUrl = t?.file?.['mp3-128'];
   if (!streamUrl) throw new Error('no public stream for this track');

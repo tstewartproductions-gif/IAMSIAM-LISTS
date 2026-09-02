@@ -80,6 +80,10 @@ test('throws a clean error when data-tralbum is absent', () => {
   assert.throws(() => parseTrackPage('<html><body>nope</body></html>'), /no data-tralbum/);
 });
 
+test('throws a clean error on malformed data-tralbum JSON', () => {
+  assert.throws(() => parseTrackPage('<div data-tralbum="{bad">'), /malformed data-tralbum/);
+});
+
 test('throws a clean error when the track has no mp3-128 (subscriber-only)', () => {
   const stripped = html.replace(/mp3-128/g, 'mp3-000');
   assert.throws(() => parseTrackPage(stripped), /no public stream/);
@@ -99,7 +103,9 @@ const decodeEntities = s => s.replace(/&(?:quot|amp|lt|gt|#39);/g, m => ENT[m]);
 export function parseTrackPage(html) {
   const m = html.match(/data-tralbum="([^"]*)"/);
   if (!m) throw new Error('no data-tralbum on page');
-  const data = JSON.parse(decodeEntities(m[1]));
+  let data;
+  try { data = JSON.parse(decodeEntities(m[1])); }
+  catch { throw new Error('malformed data-tralbum JSON'); }
   const t = data?.trackinfo?.[0];
   const streamUrl = t?.file?.['mp3-128'];
   if (!streamUrl) throw new Error('no public stream for this track');
@@ -116,7 +122,7 @@ export function parseTrackPage(html) {
 }
 ```
 
-- [ ] **Step 5: Run, witness pass** - `node --test worker/*.test.mjs` → 3 pass.
+- [ ] **Step 5: Run, witness pass** - `node --test worker/*.test.mjs` → 4 pass.
 - [ ] **Step 6: Commit** - `git add worker/ && git commit -m "feat: bandcamp track-page parser with fixture tests"`
 
 ---

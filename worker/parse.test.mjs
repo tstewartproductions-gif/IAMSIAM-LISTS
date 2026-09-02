@@ -20,6 +20,10 @@ test('throws a clean error when data-tralbum is absent', () => {
   assert.throws(() => parseTrackPage('<html><body>nope</body></html>'), /no data-tralbum/);
 });
 
+test('throws a clean error on malformed data-tralbum JSON', () => {
+  assert.throws(() => parseTrackPage('<div data-tralbum="{bad">'), /malformed data-tralbum/);
+});
+
 test('throws a clean error when the track has no mp3-128 (subscriber-only)', () => {
   const stripped = html.replace(/mp3-128/g, 'mp3-000');
   assert.throws(() => parseTrackPage(stripped), /no public stream/);
