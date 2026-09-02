@@ -20,6 +20,22 @@
   </nav>
 </header>
 <p class="intro-strip">INTRODUCING IAMSIAM LISTS :<br>A WEEKLY COLLECTION OF MUSIC RECOMMENDATIONS<br>CURATED BY FRIENDS AND FAMILY</p>
+<section id="player" hidden>
+  <div id="player-media"></div>
+  <div id="player-meta">
+    <div id="player-track"></div>
+    <div id="player-list"></div>
+  </div>
+  <div id="player-bar">
+    <button id="pv" aria-label="previous">&#171;</button>
+    <button id="pp" aria-label="play/pause">&#9654;</button>
+    <button id="nx" aria-label="next">&#187;</button>
+    <span id="t-el">0:00</span>
+    <input id="scrub" type="range" min="0" max="1000" value="0" step="1" aria-label="seek">
+    <span id="t-to">0:00</span>
+    <span id="counter"></span>
+  </div>
+</section>
 <main id="app"></main>
 <footer class="site-foot">
   <a href="https://www.instagram.com/_iamsiam_/" target="_blank" rel="noopener">INSTAGRAM</a>
