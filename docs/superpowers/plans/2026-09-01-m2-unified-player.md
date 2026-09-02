@@ -332,12 +332,15 @@ export function bandcampAdapter() {
 let ytReady = null;
 function loadYT() {
   if (ytReady) return ytReady;
-  ytReady = new Promise(res => {
+  ytReady = new Promise((res, rej) => {
     if (window.YT?.Player) return res();
     const prev = window.onYouTubeIframeAPIReady;
-    window.onYouTubeIframeAPIReady = () => { prev?.(); res(); };
+    const timer = setTimeout(() => fail(new Error('youtube api timeout')), 15000);
+    const fail = err => { clearTimeout(timer); ytReady = null; rej(err); };
+    window.onYouTubeIframeAPIReady = () => { prev?.(); clearTimeout(timer); res(); };
     const s = document.createElement('script');
     s.src = 'https://www.youtube.com/iframe_api';
+    s.onerror = () => fail(new Error('youtube api blocked'));
     document.head.appendChild(s);
   });
   return ytReady;
@@ -382,11 +385,14 @@ export function youtubeAdapter() {
 let scReady = null;
 function loadSC() {
   if (scReady) return scReady;
-  scReady = new Promise(res => {
+  scReady = new Promise((res, rej) => {
     if (window.SC?.Widget) return res();
+    const timer = setTimeout(() => fail(new Error('soundcloud api timeout')), 15000);
+    const fail = err => { clearTimeout(timer); scReady = null; rej(err); };
     const s = document.createElement('script');
     s.src = 'https://w.soundcloud.com/player/api.js';
-    s.onload = () => res();
+    s.onload = () => { clearTimeout(timer); res(); };
+    s.onerror = () => fail(new Error('soundcloud api blocked'));
     document.head.appendChild(s);
   });
   return scReady;
