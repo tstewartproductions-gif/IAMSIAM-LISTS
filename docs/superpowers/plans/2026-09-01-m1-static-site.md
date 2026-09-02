@@ -341,12 +341,7 @@ main{flex:1;width:100%;max-width:760px;margin:0 auto;padding:28px 24px 64px}
 .track .art img{width:100%;height:100%;object-fit:cover;display:block}
 .track .art:empty{border:0}
 .track .name{font-weight:600;text-transform:uppercase;letter-spacing:.02em}
-.track .details{grid-column:3;color:var(--meta);font-size:12px}
 .track .actions{display:flex;flex-direction:column;align-items:flex-end;gap:8px}
-.badge{
-  font-size:10px;color:var(--meta);border:1px solid var(--border);
-  padding:2px 6px;letter-spacing:.1em;text-transform:uppercase;
-}
 .buy{
   font-size:11px;font-weight:600;letter-spacing:.1em;
   border:1px solid var(--fg);padding:6px 12px;white-space:nowrap;
@@ -378,6 +373,36 @@ main{flex:1;width:100%;max-width:760px;margin:0 auto;padding:28px 24px 64px}
   .track .actions{grid-column:3;flex-direction:row;align-items:center;margin-top:8px}
   .site-head{flex-direction:column;align-items:flex-start;gap:10px}
 }
+
+#player{border-bottom:1px solid var(--border);padding:20px 24px;max-width:760px;margin:0 auto;width:100%}
+#player-media{background:#0d0d0d;border:1px solid var(--border);width:100%;aspect-ratio:16/9;max-height:320px;display:flex;align-items:center;justify-content:center;overflow:hidden}
+#player-media iframe,#player-media img{width:100%;height:100%;border:0;display:block;object-fit:contain}
+#player-media .bc-art{object-fit:cover}
+#player-media .player-note{color:var(--meta);font-size:12px;padding:16px;text-align:center}
+#player-media .player-note a{border-bottom:1px solid var(--strip)}
+#player-media .mount{display:none;width:100%;height:100%}
+#player-media .mount.live{display:block}
+#player-meta{display:flex;justify-content:space-between;gap:12px;margin-top:10px;font-size:12px}
+#player-track{font-weight:600;text-transform:uppercase;letter-spacing:.02em}
+#player-list{color:var(--strip)}
+#player-bar{display:flex;align-items:center;gap:10px;margin-top:10px}
+#player-bar button{background:none;border:1px solid var(--border);color:var(--fg);font-family:var(--mono);font-size:13px;padding:5px 11px;cursor:pointer}
+#player-bar button:hover{border-color:var(--fg)}
+#player-bar span{color:var(--meta);font-size:11px;min-width:34px}
+#counter{color:var(--strip);text-align:right}
+#scrub{flex:1;appearance:none;-webkit-appearance:none;height:24px;background:linear-gradient(var(--border),var(--border)) center/100% 2px no-repeat;cursor:pointer}
+#scrub::-webkit-slider-thumb{appearance:none;-webkit-appearance:none;width:10px;height:10px;background:var(--fg);border-radius:0}
+#scrub::-moz-range-thumb{width:10px;height:10px;background:var(--fg);border:0;border-radius:0}
+.track.playable .rank,.track.playable .name{cursor:pointer}
+.track.playable:hover .rank{color:var(--fg)}
+.track.active .rank{background:var(--fg);color:var(--bg);padding:0 4px}
+@media (max-width:520px){
+  #player{padding:14px 16px}
+  #player-bar{flex-wrap:wrap}
+  #scrub{order:5;flex-basis:100%}
+  #player-bar button{padding:12px 16px;font-size:15px}
+  #scrub::-webkit-slider-thumb{width:16px;height:16px}
+}
 ```
 
 - [ ] **Step 3: Commit**
@@ -397,6 +422,7 @@ git commit -m "feat: app shell and site stylesheet (studio palette)"
 - [ ] **Step 1: Write `js/app.js`**
 
 ```js
+import { initPlayer, onRender, isPlayable } from './player.js';
 // IAMSIAM_LISTS - hash router + renderers. No deps, no build.
 const app = document.getElementById('app');
 const state = { seq: 0, index: undefined, lists: Object.create(null), current: null };
@@ -429,7 +455,7 @@ function trackRow(t) {
   const buy = t.buy?.[0];
   const buyHref = buy ? safeUrl(buy.url) : '';
   return `
-  <article class="track" data-rank="${esc(t.rank)}">
+  <article class="track${isPlayable(t) ? ' playable' : ''}" data-rank="${esc(t.rank)}">
     <span class="rank">${esc(pad2(t.rank))}</span>
     <span class="art">${safeArt(t.art) ? `<img src="${esc(safeArt(t.art))}" loading="lazy" alt="">` : ''}</span>
     <span class="name">${esc(t.artist)} — ${esc(t.title)}</span>
@@ -506,13 +532,16 @@ async function route() {
   }
   if (seq !== state.seq) return;
   state.current = view.list ?? null;
+  window.__currentList = state.current;
   app.innerHTML = view.html;
+  onRender(state.current);
   document.title = view.title;
   window.scrollTo(0, 0);
 }
 
 addEventListener('hashchange', route);
 route();
+try { initPlayer(); } catch (err) { console.error(err); }
 ```
 
 (Badge shows `unreleased` when `stream` is absent, per the Task 2 amendments; a track with empty `buy` renders no buy button - the existing guard covers it.)

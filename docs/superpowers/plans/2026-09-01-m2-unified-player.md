@@ -484,7 +484,7 @@ export const isPlayable = t => !!t?.stream?.url && SUPPORTED.includes(t.stream.t
 
 const P = {
   list: null, queue: [], i: -1, adapter: null, playing: false, listShown: false,
-  seq: 0, timer: null, scrubbing: false, userPaused: false, loading: false,
+  seq: 0, timer: null, scrubbing: false, userPaused: false, loading: false, watch: null,
 };
 
 function els() {
@@ -583,7 +583,19 @@ function setPlaying(on) {
   if (on) P.timer = setInterval(updateBar, 250);
 }
 
-function play() { if (!P.adapter) return; P.userPaused = false; P.adapter.play(); setPlaying(true); updateBar(); }
+function play() {
+  if (!P.adapter) return;
+  P.userPaused = false;
+  P.adapter.play();
+  setPlaying(true);
+  updateBar();
+  clearTimeout(P.watch);
+  const at = P.adapter, t0 = at.time();
+  P.watch = setTimeout(() => {
+    // Embeds can silently refuse autoplay (iOS gesture rules): show an honest play button.
+    if (P.playing && P.adapter === at && at.time() - t0 < 0.3) setPlaying(false);
+  }, 2000);
+}
 function pause() { P.userPaused = true; if (P.adapter) P.adapter.pause(); setPlaying(false); }
 function next() { if (P.i < P.queue.length - 1) loadIndexTrack(P.i + 1); else setPlaying(false); }
 function prev() { if (P.adapter && P.adapter.time() > 3) { P.adapter.seek(0); return; } if (P.i > 0) loadIndexTrack(P.i - 1); }
@@ -646,6 +658,8 @@ export function initPlayer() {
 - [ ] **Step 4:** Commit any fixes. Push.
 
 ---
+
+**Post-drill amendments (2026-09-01, from Travis's iPhone pass + design feedback):** rows simplified to rank/art/name/buy (badges + details lines removed from rendering; details stay in data for the M3 info layer); play-watchdog flips the glyph to ▶ when an embed silently refuses autoplay (iOS auto-advance into YT/SC - platform rule, one tap resumes); F1 SC first-play re-issue + F2 failed-track retry shipped earlier.
 
 ### Task 8: M2 gate
 

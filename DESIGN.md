@@ -108,7 +108,7 @@ Steps the session performs:
 
 Single-page app (`index.html`) with hash routing (`#/`, `#/archive`, `#/about`, `#/list/<slug>`), in the single-file spirit of Travis's other tools. Aesthetic = the IG carousel language exactly: black background, IBM Plex Mono, white logo, typing animation from the info layer. Mobile-first (audience arrives from Instagram).
 
-- **Home (`#/`)**: intro strip ("INTRODUCING IAMSIAM LISTS : A WEEKLY COLLECTION..."), VU meter hero with now-playing info typing in beneath it, unified transport, then the ranked tracklist. Each row: rank, artist - title, details line, source badge, BUY button.
+- **Home (`#/`)**: intro strip ("INTRODUCING IAMSIAM LISTS : A WEEKLY COLLECTION..."), VU meter hero with now-playing info typing in beneath it, unified transport, then the ranked tracklist. Each row (simplified per Travis 2026-09-01): rank, artwork, artist - title, BUY button - no badges, no details line. `details` stays in the data and surfaces in the player panel's info layer (M3, typing animation) instead of the rows.
 - **Archive (`#/archive`)**: past weeks as a simple grid (curator, list title, date). Clicking loads that list into the same player view.
 - **About (`#/about`)**: short blurb from the label primer + Instagram link.
 
