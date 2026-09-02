@@ -38,7 +38,6 @@ function trackRow(t) {
     <span class="actions">
       ${buyHref ? `<a class="buy" href="${esc(buyHref)}" target="_blank" rel="noopener">BUY ON ${esc(buy.platform)}</a>` : ''}
     </span>
-    ${t.details ? `<span class="details">${esc(t.details)}</span>` : ''}
   </article>`;
 }
 
