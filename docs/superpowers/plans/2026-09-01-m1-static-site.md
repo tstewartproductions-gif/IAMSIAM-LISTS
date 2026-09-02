@@ -460,7 +460,6 @@ function trackRow(t) {
     <span class="art">${safeArt(t.art) ? `<img src="${esc(safeArt(t.art))}" loading="lazy" alt="">` : ''}</span>
     <span class="name">${esc(t.artist)} — ${esc(t.title)}</span>
     <span class="actions">
-      <span class="badge">${esc(t.stream?.type || 'unreleased')}</span>
       ${buyHref ? `<a class="buy" href="${esc(buyHref)}" target="_blank" rel="noopener">BUY ON ${esc(buy.platform)}</a>` : ''}
     </span>
     ${t.details ? `<span class="details">${esc(t.details)}</span>` : ''}
