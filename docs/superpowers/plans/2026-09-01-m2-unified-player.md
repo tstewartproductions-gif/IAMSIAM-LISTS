@@ -411,7 +411,7 @@ function loadSC() {
 }
 
 export function soundcloudAdapter() {
-  let widget = null, dur = 0, pos = 0;
+  let widget = null, dur = 0, pos = 0, started = false;
   const a = {
     onended: null, onerror: null, onstate: null,
     async mount(t, mediaEl) {
@@ -428,13 +428,18 @@ export function soundcloudAdapter() {
           widget.bind(SC.Widget.Events.PLAY_PROGRESS, e => { pos = e.currentPosition / 1000; if (!dur) widget.getDuration(ms => { dur = ms / 1000; }); });
           widget.bind(SC.Widget.Events.FINISH, () => a.onended?.());
           widget.bind(SC.Widget.Events.ERROR, () => a.onerror?.(new Error('soundcloud error')));
-          widget.bind(SC.Widget.Events.PLAY, () => a.onstate?.(true));
+          widget.bind(SC.Widget.Events.PLAY, () => { started = true; a.onstate?.(true); });
           widget.bind(SC.Widget.Events.PAUSE, () => a.onstate?.(false));
           res();
         });
       });
     },
-    play: () => widget?.play(),
+    play: () => {
+      if (!widget) return;
+      widget.play();
+      // The widget occasionally swallows the first play() right after READY - re-issue once.
+      setTimeout(() => { if (widget && !started) widget.play(); }, 800);
+    },
     pause: () => widget?.pause(),
     seek: s => { widget?.seekTo(s * 1000); pos = s; },
     time: () => pos,
@@ -479,7 +484,7 @@ export const isPlayable = t => !!t?.stream?.url && SUPPORTED.includes(t.stream.t
 
 const P = {
   list: null, queue: [], i: -1, adapter: null, playing: false, listShown: false,
-  seq: 0, timer: null, scrubbing: false, userPaused: false,
+  seq: 0, timer: null, scrubbing: false, userPaused: false, loading: false,
 };
 
 function els() {
@@ -524,6 +529,7 @@ async function loadIndexTrack(idx) {
   const mySeq = ++P.seq;
   const e = els(); const t = P.queue[idx];
   if (!t) return;
+  P.loading = true;
   P.adapter?.destroy(); P.adapter = null;
   P.i = idx; P.userPaused = false;
   const firstOpen = e.root.hidden;
@@ -553,6 +559,7 @@ async function loadIndexTrack(idx) {
     return;
   }
   if (mySeq !== P.seq) { ad.destroy(); return; }
+  P.loading = false;
   P.adapter = ad;
   e.media.replaceChildren(wrap);
   wrap.classList.add('live');
@@ -560,6 +567,7 @@ async function loadIndexTrack(idx) {
 }
 
 function fail(t) {
+  P.loading = false;
   P.adapter?.destroy(); P.adapter = null;
   const e = els();
   const link = safeUrl(t.stream?.url ?? t.buy?.[0]?.url);
@@ -581,7 +589,9 @@ function next() { if (P.i < P.queue.length - 1) loadIndexTrack(P.i + 1); else se
 function prev() { if (P.adapter && P.adapter.time() > 3) { P.adapter.seek(0); return; } if (P.i > 0) loadIndexTrack(P.i - 1); }
 
 export function playTrack(list, rank) {
-  if (P.list === list && P.queue[P.i]?.rank === rank) { P.playing ? pause() : play(); return; }
+  if (P.list === list && P.queue[P.i]?.rank === rank && (P.adapter || P.loading)) {
+    P.playing ? pause() : play(); return; // same track: toggle. After a fail (no adapter, not loading), fall through to retry.
+  }
   const queue = list.tracks.filter(isPlayable);
   const idx = queue.findIndex(t => t.rank === rank);
   if (idx === -1) return;

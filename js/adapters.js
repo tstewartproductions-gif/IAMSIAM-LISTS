@@ -126,7 +126,7 @@ function loadSC() {
 }
 
 export function soundcloudAdapter() {
-  let widget = null, dur = 0, pos = 0;
+  let widget = null, dur = 0, pos = 0, started = false;
   const a = {
     onended: null, onerror: null, onstate: null,
     async mount(t, mediaEl) {
@@ -143,13 +143,18 @@ export function soundcloudAdapter() {
           widget.bind(SC.Widget.Events.PLAY_PROGRESS, e => { pos = e.currentPosition / 1000; if (!dur) widget.getDuration(ms => { dur = ms / 1000; }); });
           widget.bind(SC.Widget.Events.FINISH, () => a.onended?.());
           widget.bind(SC.Widget.Events.ERROR, () => a.onerror?.(new Error('soundcloud error')));
-          widget.bind(SC.Widget.Events.PLAY, () => a.onstate?.(true));
+          widget.bind(SC.Widget.Events.PLAY, () => { started = true; a.onstate?.(true); });
           widget.bind(SC.Widget.Events.PAUSE, () => a.onstate?.(false));
           res();
         });
       });
     },
-    play: () => widget?.play(),
+    play: () => {
+      if (!widget) return;
+      widget.play();
+      // The widget occasionally swallows the first play() right after READY - re-issue once.
+      setTimeout(() => { if (widget && !started) widget.play(); }, 800);
+    },
     pause: () => widget?.pause(),
     seek: s => { widget?.seekTo(s * 1000); pos = s; },
     time: () => pos,

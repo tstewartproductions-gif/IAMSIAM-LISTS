@@ -12,7 +12,7 @@ export const isPlayable = t => !!t?.stream?.url && SUPPORTED.includes(t.stream.t
 
 const P = {
   list: null, queue: [], i: -1, adapter: null, playing: false, listShown: false,
-  seq: 0, timer: null, scrubbing: false, userPaused: false,
+  seq: 0, timer: null, scrubbing: false, userPaused: false, loading: false,
 };
 
 function els() {
@@ -57,6 +57,7 @@ async function loadIndexTrack(idx) {
   const mySeq = ++P.seq;
   const e = els(); const t = P.queue[idx];
   if (!t) return;
+  P.loading = true;
   P.adapter?.destroy(); P.adapter = null;
   P.i = idx; P.userPaused = false;
   const firstOpen = e.root.hidden;
@@ -86,6 +87,7 @@ async function loadIndexTrack(idx) {
     return;
   }
   if (mySeq !== P.seq) { ad.destroy(); return; }
+  P.loading = false;
   P.adapter = ad;
   e.media.replaceChildren(wrap);
   wrap.classList.add('live');
@@ -93,6 +95,7 @@ async function loadIndexTrack(idx) {
 }
 
 function fail(t) {
+  P.loading = false;
   P.adapter?.destroy(); P.adapter = null;
   const e = els();
   const link = safeUrl(t.stream?.url ?? t.buy?.[0]?.url);
@@ -114,7 +117,9 @@ function next() { if (P.i < P.queue.length - 1) loadIndexTrack(P.i + 1); else se
 function prev() { if (P.adapter && P.adapter.time() > 3) { P.adapter.seek(0); return; } if (P.i > 0) loadIndexTrack(P.i - 1); }
 
 export function playTrack(list, rank) {
-  if (P.list === list && P.queue[P.i]?.rank === rank) { P.playing ? pause() : play(); return; }
+  if (P.list === list && P.queue[P.i]?.rank === rank && (P.adapter || P.loading)) {
+    P.playing ? pause() : play(); return; // same track: toggle. After a fail (no adapter, not loading), fall through to retry.
+  }
   const queue = list.tracks.filter(isPlayable);
   const idx = queue.findIndex(t => t.rank === rank);
   if (idx === -1) return;
