@@ -122,7 +122,7 @@ Single-page app (`index.html`) with hash routing (`#/`, `#/archive`, `#/about`, 
 
 ## Milestones (gated - complete and verify each before starting the next)
 
-- **M1 - Static site.** Repo + GitHub Pages live. Renders both existing lists (Scrufizzer's grime lists, Machinedrum's jungle top 10) from JSON with artwork, details, source badges, and working buy links. No player yet. *This is also the look-iteration phase - Travis reacts to the real page.*
+- **M1 - Static site. ✅ DONE, live 2026-09-01: https://tstewartproductions-gif.github.io/IAMSIAM-LISTS/ (look approved by Travis).** Repo + GitHub Pages live. Renders both existing lists (Scrufizzer's grime lists, Machinedrum's jungle top 10) from JSON with artwork, details, source badges, and working buy links. No player yet. *This is also the look-iteration phase - Travis reacts to the real page.*
 - **M2 - Unified player.** Cloudflare Worker deployed, three adapters, transport bar, embed fallback, expired-stream recovery.
 - **M3 - VU meter.** `iamsiam-vu.js` module ported, baker script built, envelopes baked for both existing lists, meter + typing info layer live and synced.
 - **M4 - Weekly pipeline.** `/add-list` skill + validator, exercised end to end on a real or dress-rehearsal list.
