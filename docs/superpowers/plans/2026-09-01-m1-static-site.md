@@ -322,7 +322,7 @@ a:focus-visible,.buy:focus-visible{outline:1px solid var(--fg);outline-offset:2p
 
 main{flex:1;width:100%;max-width:760px;margin:0 auto;padding:28px 24px 64px}
 
-.list-head{margin-bottom:24px}
+.list-head{margin-bottom:24px;text-align:center}
 .list-head .curator{font-size:12px;color:var(--meta);letter-spacing:.1em;text-transform:uppercase}
 .list-head h1{font-size:20px;font-weight:600;text-transform:uppercase;letter-spacing:.04em;margin-top:4px}
 .list-head .date{font-size:11px;color:var(--strip);margin-top:4px}
@@ -382,9 +382,8 @@ main{flex:1;width:100%;max-width:760px;margin:0 auto;padding:28px 24px 64px}
 #player-media .player-note a{border-bottom:1px solid var(--strip)}
 #player-media .mount{display:none;width:100%;height:100%}
 #player-media .mount.live{display:block}
-#player-meta{display:flex;justify-content:space-between;gap:12px;margin-top:10px;font-size:12px}
+#player-meta{display:flex;flex-direction:column;align-items:center;text-align:center;gap:2px;margin-top:12px;font-size:12px}
 #player-track{font-weight:600;text-transform:uppercase;letter-spacing:.02em}
-#player-list{color:var(--strip)}
 #player-bar{display:flex;align-items:center;gap:10px;margin-top:10px}
 #player-bar button{background:none;border:1px solid var(--border);color:var(--fg);font-family:var(--mono);font-size:13px;padding:5px 11px;cursor:pointer}
 #player-bar button:hover{border-color:var(--fg)}
@@ -403,6 +402,12 @@ main{flex:1;width:100%;max-width:760px;margin:0 auto;padding:28px 24px 64px}
   #player-bar button{padding:12px 16px;font-size:15px}
   #scrub::-webkit-slider-thumb{width:16px;height:16px}
 }
+
+/* VU meter + typing info layer */
+#player-media{position:relative}
+#player-media canvas.vu-overlay{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+#player.vu-full #player-media .mount.live{opacity:.22}
+#player-details{color:var(--meta);font-size:12px}
 ```
 
 - [ ] **Step 3: Commit**

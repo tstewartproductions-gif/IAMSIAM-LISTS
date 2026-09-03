@@ -29,7 +29,7 @@ a:focus-visible,.buy:focus-visible{outline:1px solid var(--fg);outline-offset:2p
 
 main{flex:1;width:100%;max-width:760px;margin:0 auto;padding:28px 24px 64px}
 
-.list-head{margin-bottom:24px}
+.list-head{margin-bottom:24px;text-align:center}
 .list-head .curator{font-size:12px;color:var(--meta);letter-spacing:.1em;text-transform:uppercase}
 .list-head h1{font-size:20px;font-weight:600;text-transform:uppercase;letter-spacing:.04em;margin-top:4px}
 .list-head .date{font-size:11px;color:var(--strip);margin-top:4px}
