@@ -14,7 +14,7 @@ a{color:inherit;text-decoration:none}
 a:focus-visible,.buy:focus-visible{outline:1px solid var(--fg);outline-offset:2px}
 
 .site-head{
-  display:flex;align-items:center;justify-content:space-between;gap:16px;
+  display:flex;flex-direction:column;align-items:center;gap:10px;
   padding:20px 24px;border-bottom:1px solid var(--border);
 }
 .brand{display:flex;align-items:center;gap:10px;font-weight:600;letter-spacing:.12em}
@@ -24,7 +24,7 @@ a:focus-visible,.buy:focus-visible{outline:1px solid var(--fg);outline-offset:2p
 
 .intro-strip{
   padding:10px 24px;border-bottom:1px solid var(--border);
-  color:var(--strip);font-size:11px;letter-spacing:.08em;
+  color:var(--strip);font-size:11px;letter-spacing:.08em;text-align:center;
 }
 
 main{flex:1;width:100%;max-width:760px;margin:0 auto;padding:28px 24px 64px}
@@ -67,7 +67,7 @@ main{flex:1;width:100%;max-width:760px;margin:0 auto;padding:28px 24px 64px}
 .about a{border-bottom:1px solid var(--strip)}
 
 .site-foot{
-  display:flex;gap:18px;padding:20px 24px;border-top:1px solid var(--border);
+  display:flex;justify-content:center;gap:18px;padding:20px 24px;border-top:1px solid var(--border);
   font-size:11px;color:var(--strip);letter-spacing:.1em;
 }
 .site-foot a:hover{color:var(--fg)}
@@ -78,7 +78,6 @@ main{flex:1;width:100%;max-width:760px;margin:0 auto;padding:28px 24px 64px}
   .track{grid-template-columns:26px 40px 1fr}
   .track .art{width:40px;height:40px}
   .track .actions{grid-column:3;flex-direction:row;align-items:center;margin-top:8px}
-  .site-head{flex-direction:column;align-items:flex-start;gap:10px}
 }
 
 #player{border-bottom:1px solid var(--border);padding:20px 24px;max-width:760px;margin:0 auto;width:100%}
