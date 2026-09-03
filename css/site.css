@@ -63,7 +63,8 @@ main{flex:1;width:100%;max-width:760px;margin:0 auto;padding:28px 24px 64px}
 .archive-grid .title{font-weight:600;text-transform:uppercase;margin-top:2px}
 .archive-grid .date{color:var(--strip);font-size:11px;margin-top:4px}
 
-.about p{color:var(--meta);max-width:52ch;margin-bottom:16px}
+.about{max-width:52ch;margin:0 auto}
+.about p{color:var(--meta);margin-bottom:16px}
 .about a{border-bottom:1px solid var(--strip)}
 
 .site-foot{
