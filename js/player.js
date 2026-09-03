@@ -1,6 +1,6 @@
 // IAMSIAM_LISTS - unified transport over the current list's playable tracks.
 import { adapterFor } from './adapters.js';
-import { loadLogo, createMeter, envelopeSource, typeInto } from './iamsiam-vu.js';
+import { loadLogo, createMeter, envelopeSource } from './iamsiam-vu.js';
 
 const $ = id => document.getElementById(id);
 const fmt = s => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
@@ -89,22 +89,11 @@ async function wireVu(t, mySeq) {
   if (P.playing) vuActive.start(() => P.adapter?.time() ?? 0); else vuActive.stop();
 }
 
-/* ---------------------------------------------------------- typing layer */
-let typer = null, typerD = null;
-
-/** Types "ARTIST — TITLE", then the details line 350ms behind it. */
-function typeMeta(t, mySeq) {
+/* ------------------------------------------------------- now-playing text */
+function setMeta(t) {
   const e = els();
-  typer?.cancel(); typerD?.cancel(); typerD = null;
-  e.details.textContent = '';
-  typer = typeInto(e.track, `${t.artist} — ${t.title}`);
-  typer.done.then(ok => {
-    if (!ok || mySeq !== P.seq) return;
-    setTimeout(() => {
-      if (mySeq !== P.seq) return;
-      typerD = typeInto(e.details, t.details ?? `${P.list.curator} · ${P.list.listTitle}`);
-    }, 350);
-  });
+  e.track.textContent = `${t.artist} — ${t.title}`;
+  e.details.textContent = t.details ?? `${P.list.curator} · ${P.list.listTitle}`;
 }
 
 function markRows() {
@@ -149,7 +138,7 @@ async function loadIndexTrack(idx) {
   P.i = idx; P.userPaused = false;
   const firstOpen = e.root.hidden;
   e.root.hidden = false;
-  typeMeta(t, mySeq);  // types through the load, so the panel is never dead air
+  setMeta(t);
   e.counter.textContent = `${idx + 1}/${P.queue.length}`;
   resetBar();
   setPlaying(true); // track will auto-play; pause glyph lets a click during load register pause-intent

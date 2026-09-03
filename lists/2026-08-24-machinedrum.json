@@ -36,15 +36,16 @@
       "details": "phat bubba · 2015 · 5:41",
       "art": "art/2026-08-24/02.jpg",
       "stream": {
-        "type": "soundcloud",
-        "url": "https://soundcloud.com/dwarde/dwarde-tim-reaper-untitled"
+        "type": "file",
+        "url": "audio/2026-08-24/02.mp3"
       },
       "buy": [
         {
           "platform": "bandcamp",
           "url": "https://phatbubbarecords.bandcamp.com/album/pbr-001"
         }
-      ]
+      ],
+      "envelope": "env/2026-08-24/02.json"
     },
     {
       "rank": 3,

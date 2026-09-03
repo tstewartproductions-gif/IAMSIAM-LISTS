@@ -11,8 +11,8 @@
       "details": "xl recordings · 2002 · 3:18",
       "art": "art/2026-08-11/01.jpg",
       "stream": {
-        "type": "youtube",
-        "url": "https://www.youtube.com/watch?v=SEh8-a2mDF4"
+        "type": "file",
+        "url": "audio/2026-08-11/01.mp3"
       },
       "buy": [
         {
@@ -23,20 +23,22 @@
           "platform": "itunes",
           "url": "https://music.apple.com/gb/album/igloo-instrumental/1450123666?i=1450123668"
         }
-      ]
+      ],
+      "envelope": "env/2026-08-11/01.json"
     },
     {
       "rank": 2,
       "section": "top 5 grime instrumentals",
       "artist": "So Solid Crew",
       "title": "Whoa (Instrumental)",
-      "details": "relentless · 2001 · 4:01",
+      "details": "relentless · 2001 · 4:36",
       "art": "art/2026-08-11/02.jpg",
       "stream": {
-        "type": "youtube",
-        "url": "https://www.youtube.com/watch?v=-Q-rVrMikR8"
+        "type": "file",
+        "url": "audio/2026-08-11/02.mp3"
       },
-      "buy": []
+      "buy": [],
+      "envelope": "env/2026-08-11/02.json"
     },
     {
       "rank": 3,
@@ -92,15 +94,16 @@
       "details": "xl recordings · 2003 · 2:05",
       "art": "art/2026-08-11/05.jpg",
       "stream": {
-        "type": "youtube",
-        "url": "https://www.youtube.com/watch?v=vUqUx1mtOXQ"
+        "type": "file",
+        "url": "audio/2026-08-11/05.mp3"
       },
       "buy": [
         {
           "platform": "beatport",
           "url": "https://www.beatport.com/track/ting-ting/17962645"
         }
-      ]
+      ],
+      "envelope": "env/2026-08-11/05.json"
     },
     {
       "rank": 6,
@@ -110,8 +113,8 @@
       "details": "xl recordings · 2003 · 4:05",
       "art": "art/2026-08-11/06.jpg",
       "stream": {
-        "type": "youtube",
-        "url": "https://www.youtube.com/watch?v=YH0KWX2a8zY"
+        "type": "file",
+        "url": "audio/2026-08-11/06.mp3"
       },
       "buy": [
         {
@@ -122,7 +125,8 @@
           "platform": "itunes",
           "url": "https://music.apple.com/gb/album/i-luv-u-original-mix/7059186?i=7059184"
         }
-      ]
+      ],
+      "envelope": "env/2026-08-11/06.json"
     },
     {
       "rank": 7,
@@ -132,8 +136,8 @@
       "details": "boy better know · 2015 · 3:33",
       "art": "art/2026-08-11/07.jpg",
       "stream": {
-        "type": "youtube",
-        "url": "https://www.youtube.com/watch?v=rivFCwwvoh8"
+        "type": "file",
+        "url": "audio/2026-08-11/07.mp3"
       },
       "buy": [
         {
@@ -144,7 +148,8 @@
           "platform": "itunes",
           "url": "https://music.apple.com/gb/album/man-dont-care/1168969548?i=1168969981"
         }
-      ]
+      ],
+      "envelope": "env/2026-08-11/07.json"
     },
     {
       "rank": 8,
@@ -154,15 +159,16 @@
       "details": "boy better know · 2018 · 3:17",
       "art": "art/2026-08-11/08.jpg",
       "stream": {
-        "type": "youtube",
-        "url": "https://www.youtube.com/watch?v=ET0LuQ3_ZIw"
+        "type": "file",
+        "url": "audio/2026-08-11/08.mp3"
       },
       "buy": [
         {
           "platform": "beatport",
           "url": "https://www.beatport.com/track/energy-stay-far-away/26767106"
         }
-      ]
+      ],
+      "envelope": "env/2026-08-11/08.json"
     },
     {
       "rank": 9,
@@ -172,10 +178,11 @@
       "details": "sbtv · 2013 · 4:02",
       "art": "art/2026-08-11/09.jpg",
       "stream": {
-        "type": "youtube",
-        "url": "https://www.youtube.com/watch?v=PbsGxVySwys"
+        "type": "file",
+        "url": "audio/2026-08-11/09.mp3"
       },
-      "buy": []
+      "buy": [],
+      "envelope": "env/2026-08-11/09.json"
     },
     {
       "rank": 10,
@@ -185,15 +192,16 @@
       "details": "parlophone · 2015 · 4:43",
       "art": "art/2026-08-11/10.jpg",
       "stream": {
-        "type": "youtube",
-        "url": "https://www.youtube.com/watch?v=qTKSIk7Uqvo"
+        "type": "file",
+        "url": "audio/2026-08-11/10.mp3"
       },
       "buy": [
         {
           "platform": "itunes",
           "url": "https://music.apple.com/gb/album/garageskankfreestyle-bonus-track/1091299537?i=1091300303"
         }
-      ]
+      ],
+      "envelope": "env/2026-08-11/10.json"
     }
   ]
 }
