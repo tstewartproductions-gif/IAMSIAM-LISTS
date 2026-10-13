@@ -1,0 +1,195 @@
+{
+  "curator": "angelica bess",
+  "listTitle": "top 10 desert-island tracks",
+  "date": "2026-10-13",
+  "tracks": [
+    {
+      "rank": 1,
+      "artist": "SHERELLE",
+      "title": "XTC",
+      "details": "method 808 · 2025 · 5:35",
+      "art": "art/2026-10-13/01.jpg",
+      "stream": {
+        "type": "youtube",
+        "url": "https://www.youtube.com/watch?v=iSYKMa-Mwcw"
+      },
+      "buy": [
+        {
+          "platform": "bandcamp",
+          "url": "https://sherelle.bandcamp.com/track/xtc"
+        }
+      ],
+      "envelope": "env/2026-10-13/01.json"
+    },
+    {
+      "rank": 2,
+      "artist": "Jessy Lanza",
+      "title": "Anyone Around",
+      "details": "hyperdub · 2020 · 2:49",
+      "art": "art/2026-10-13/02.jpg",
+      "stream": {
+        "type": "youtube",
+        "url": "https://www.youtube.com/watch?v=YHmGr0PAvUU"
+      },
+      "buy": [
+        {
+          "platform": "bandcamp",
+          "url": "https://jessylanza.bandcamp.com/track/anyone-around"
+        }
+      ],
+      "envelope": "env/2026-10-13/02.json"
+    },
+    {
+      "rank": 3,
+      "artist": "Freddie Gibbs & Madlib",
+      "title": "Crime Pays",
+      "details": "madlib invazion · 2019 · 3:04",
+      "art": "art/2026-10-13/03.jpg",
+      "stream": {
+        "type": "youtube",
+        "url": "https://www.youtube.com/watch?v=JjkeIJX8c3k"
+      },
+      "buy": [
+        {
+          "platform": "beatport",
+          "url": "https://www.beatport.com/track/crime-pays/12001521"
+        }
+      ],
+      "envelope": "env/2026-10-13/03.json"
+    },
+    {
+      "rank": 4,
+      "artist": "GENA / Liv.e / Karriem Riggins",
+      "title": "Circlesz",
+      "details": "lex records · 2025 · 2:21",
+      "art": "art/2026-10-13/04.jpg",
+      "stream": {
+        "type": "youtube",
+        "url": "https://www.youtube.com/watch?v=UF08b4eCSCQ"
+      },
+      "buy": [
+        {
+          "platform": "bandcamp",
+          "url": "https://o-liv.bandcamp.com/track/circlesz"
+        }
+      ],
+      "envelope": "env/2026-10-13/04.json"
+    },
+    {
+      "rank": 5,
+      "artist": "Mamukueno",
+      "title": "Rei do Palhetinho",
+      "details": "analog africa · 2010 · 3:09",
+      "art": "art/2026-10-13/05.jpg",
+      "stream": {
+        "type": "youtube",
+        "url": "https://www.youtube.com/watch?v=um9fvjBsn8E"
+      },
+      "buy": [
+        {
+          "platform": "bandcamp",
+          "url": "https://analogafrica.bandcamp.com/track/rei-do-palhetinho"
+        }
+      ],
+      "envelope": "env/2026-10-13/05.json"
+    },
+    {
+      "rank": 6,
+      "artist": "Genevieve Artadi",
+      "title": "Plate",
+      "details": "brainfeeder · 2023 · 3:27",
+      "art": "art/2026-10-13/06.jpg",
+      "stream": {
+        "type": "youtube",
+        "url": "https://www.youtube.com/watch?v=A0BfESONPr4"
+      },
+      "buy": [
+        {
+          "platform": "bandcamp",
+          "url": "https://genevieveartadi.bandcamp.com/track/plate/"
+        }
+      ],
+      "envelope": "env/2026-10-13/06.json"
+    },
+    {
+      "rank": 7,
+      "artist": "Kiko Mizuhara",
+      "title": "Feelin' Wee",
+      "details": "stones throw · 2026 · 4:09",
+      "art": "art/2026-10-13/07.jpg",
+      "stream": {
+        "type": "youtube",
+        "url": "https://www.youtube.com/watch?v=alO-dFJq6eo"
+      },
+      "buy": [
+        {
+          "platform": "bandcamp",
+          "url": "https://kikomizuhara.bandcamp.com/track/feelin-wee"
+        }
+      ],
+      "envelope": "env/2026-10-13/07.json"
+    },
+    {
+      "rank": 8,
+      "artist": "L'Rain",
+      "title": "soulless cycle",
+      "details": "mexican summer · 2026 · 2:58",
+      "art": "art/2026-10-13/08.jpg",
+      "stream": {
+        "type": "youtube",
+        "url": "https://www.youtube.com/watch?v=mDbfrW314qg"
+      },
+      "buy": [
+        {
+          "platform": "bandcamp",
+          "url": "https://lrain.bandcamp.com/track/soulless-cycle"
+        }
+      ],
+      "envelope": "env/2026-10-13/08.json"
+    },
+    {
+      "rank": 9,
+      "artist": "Bill Withers",
+      "title": "Can We Pretend",
+      "details": "sussex · 1974 · 3:49",
+      "art": "art/2026-10-13/09.jpg",
+      "stream": {
+        "type": "youtube",
+        "url": "https://www.youtube.com/watch?v=qiSmeCIi3Lo"
+      },
+      "buy": [
+        {
+          "platform": "beatport",
+          "url": "https://www.beatport.com/track/can-we-pretend/6393187"
+        },
+        {
+          "platform": "itunes",
+          "url": "https://music.apple.com/us/album/can-we-pretend/322981824?i=322981908"
+        }
+      ],
+      "envelope": "env/2026-10-13/09.json"
+    },
+    {
+      "rank": 10,
+      "artist": "DJ Rashad",
+      "title": "In Da Club Before Eleven O' Clock",
+      "details": "juke trax online · 2007 · 5:38",
+      "art": "art/2026-10-13/10.jpg",
+      "stream": {
+        "type": "youtube",
+        "url": "https://www.youtube.com/watch?v=gG6TS6mJfy0"
+      },
+      "buy": [
+        {
+          "platform": "beatport",
+          "url": "https://www.beatport.com/track/in-da-club-before-eleven-o-clock/234955"
+        },
+        {
+          "platform": "itunes",
+          "url": "https://music.apple.com/us/album/in-da-club-before-eleven-o-clock/212886806?i=212886812"
+        }
+      ],
+      "envelope": "env/2026-10-13/10.json"
+    }
+  ]
+}
