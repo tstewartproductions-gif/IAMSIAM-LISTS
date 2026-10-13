@@ -9,7 +9,8 @@ const esc = s => String(s ?? '').replace(/[&<>"']/g,
 const safeUrl = u => /^https?:\/\//i.test(String(u ?? '')) ? String(u) : '';
 
 const SUPPORTED = ['bandcamp', 'youtube', 'soundcloud', 'file'];
-const AUDIO_TYPES = ['bandcamp', 'file']; // streams played in our own <audio> - the only ones the meter runs for
+const AUDIO_TYPES = ['bandcamp', 'file']; // streams played in our own <audio>
+const meterable = t => !!t?.envelope && (AUDIO_TYPES.includes(t.stream?.type) || t.stream?.type === 'youtube');
 export const isPlayable = t => !!t?.stream?.url && SUPPORTED.includes(t.stream.type);
 
 const P = {
@@ -19,7 +20,7 @@ const P = {
 
 function els() {
   return { root: $('player'), media: $('player-media'), track: $('player-track'),
-    details: $('player-details'), pp: $('pp'), pv: $('pv'), nx: $('nx'),
+    details: $('player-details'), dock: $('yt-dock'), pp: $('pp'), pv: $('pv'), nx: $('nx'),
     el: $('t-el'), to: $('t-to'), scrub: $('scrub'), counter: $('counter') };
 }
 
@@ -66,7 +67,7 @@ function stopVu() { vuActive?.stop(); vuActive = null; }
     fetch must never delay playback, so every step re-checks mySeq. Real envelope
     or no meter at all - a fake meter is worse than none (Travis, 2026-09-02). */
 async function wireVu(t, mySeq) {
-  if (!t.envelope || !AUDIO_TYPES.includes(t.stream?.type)) { setVuMode(null); return; }
+  if (!meterable(t)) { setVuMode(null); return; }
   const v = await ensureMeters();
   if (!v || mySeq !== P.seq) return;
   let src, bands;
@@ -135,6 +136,7 @@ async function loadIndexTrack(idx) {
   P.loading = true;
   P.adapter?.destroy(); P.adapter = null;
   stopVu();            // the old track's meter must not run against the new one's clock
+  e.dock.hidden = true; e.dock.replaceChildren();
   P.i = idx; P.userPaused = false;
   const firstOpen = e.root.hidden;
   e.root.hidden = false;
@@ -150,9 +152,12 @@ async function loadIndexTrack(idx) {
   ad.onended = () => { if (mySeq === P.seq) next(); };
   ad.onerror = () => { if (mySeq === P.seq) fail(t); };
   ad.onstate = on => { if (mySeq === P.seq) setPlaying(on); };
+  // YouTube tracks with a baked envelope: the meter owns the panel (over the art),
+  // and the video docks as a small visible tile below it (YT ToS: visible, unobscured).
+  const ytMeter = t.stream?.type === 'youtube' && !!t.envelope;
   const wrap = document.createElement('div');
   wrap.className = 'mount';
-  e.media.appendChild(wrap);
+  (ytMeter ? e.dock : e.media).appendChild(wrap);
   try {
     await ad.mount(t, wrap);
   } catch (err) {
@@ -164,10 +169,24 @@ async function loadIndexTrack(idx) {
   if (mySeq !== P.seq) { ad.destroy(); return; }
   P.loading = false;
   P.adapter = ad;
-  // Keep wrap attached in place: re-attaching would reload its iframe and orphan
-  // the SC/YT widget's event stream. Remove the loading note and stale siblings instead.
-  for (const c of [...els().media.children]) {
-    if (c !== wrap && !c.classList?.contains('vu-overlay')) c.remove();
+  if (ytMeter) {
+    if (t.art) {
+      const img = document.createElement('img');
+      img.className = 'bc-art';
+      img.alt = '';
+      img.src = t.art;
+      setMedia(img);
+    } else {
+      setMedia();
+    }
+    for (const c of [...e.dock.children]) if (c !== wrap) c.remove();
+    e.dock.hidden = false;
+  } else {
+    // Keep wrap attached in place: re-attaching would reload its iframe and orphan
+    // the SC/YT widget's event stream. Remove the loading note and stale siblings instead.
+    for (const c of [...els().media.children]) {
+      if (c !== wrap && !c.classList?.contains('vu-overlay')) c.remove();
+    }
   }
   wrap.classList.add('live');
   wireVu(t, mySeq);   // unawaited: the meter catches up, playback never waits
@@ -178,6 +197,7 @@ function fail(t) {
   P.loading = false;
   P.adapter?.destroy(); P.adapter = null;
   stopVu();
+  els().dock.hidden = true; els().dock.replaceChildren();
   setVuMode(null);   // no meter over the failure note
   const e = els();
   const link = safeUrl(t.stream?.url ?? t.buy?.[0]?.url);
