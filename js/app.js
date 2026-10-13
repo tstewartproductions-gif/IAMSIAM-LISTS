@@ -84,8 +84,8 @@ async function archiveView() {
 function aboutView() {
   return { title: 'IAMSIAM LISTS · ABOUT', html: `
   <div class="about">
-    <p>IAMSIAM LISTS is a weekly collection of music recommendations, curated by friends and family of the IAMSIAM label.</p>
-    <p>Every week a different artist or friend of the label shares a top 10 of their liking. Listen here, and if something moves you, buy it. Every track links to the store that supports the artist most directly.</p>
+    <p>IAMSIAM LISTS is a collection of music recommendations, curated by friends and family of the IAMSIAM label.</p>
+    <p>Each list comes from a different artist or friend of the label - a top 10 of their liking. Listen here, and if something moves you, buy it. Every track links to the store that supports the artist most directly.</p>
     <p><a href="https://www.instagram.com/_iamsiam_/" target="_blank" rel="noopener">INSTAGRAM</a> · <a href="https://iamsiam.bandcamp.com" target="_blank" rel="noopener">BANDCAMP</a></p>
   </div>` };
 }

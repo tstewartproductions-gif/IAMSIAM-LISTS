@@ -258,7 +258,7 @@ git commit -m "feat: list schema validator with tests"
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>IAMSIAM LISTS</title>
-<meta name="description" content="A weekly playlist of music curated by friends and family of the IAMSIAM label.">
+<meta name="description" content="Music recommendations curated by friends and family of the IAMSIAM label.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
@@ -268,12 +268,28 @@ git commit -m "feat: list schema validator with tests"
 <header class="site-head">
   <a class="brand" href="#/"><img src="assets/logo.png" alt="IAMSIAM"><span>LISTS</span></a>
   <nav>
-    <a href="#/">THIS WEEK</a>
+    <a href="#/">LATEST</a>
     <a href="#/archive">ARCHIVE</a>
     <a href="#/about">ABOUT</a>
   </nav>
 </header>
-<p class="intro-strip">INTRODUCING IAMSIAM LISTS :<br>A WEEKLY COLLECTION OF MUSIC RECOMMENDATIONS<br>CURATED BY FRIENDS AND FAMILY</p>
+<p class="intro-strip">INTRODUCING IAMSIAM LISTS :<br>A COLLECTION OF MUSIC RECOMMENDATIONS<br>CURATED BY FRIENDS AND FAMILY</p>
+<section id="player" hidden>
+  <div id="player-media"></div>
+  <div id="player-meta">
+    <div id="player-track"></div>
+    <div id="player-details"></div>
+  </div>
+  <div id="player-bar">
+    <button id="pv" aria-label="previous">&#171;</button>
+    <button id="pp" aria-label="play/pause">&#9654;</button>
+    <button id="nx" aria-label="next">&#187;</button>
+    <span id="t-el">0:00</span>
+    <input id="scrub" type="range" min="0" max="1000" value="0" step="1" aria-label="seek">
+    <span id="t-to">0:00</span>
+    <span id="counter"></span>
+  </div>
+</section>
 <main id="app"></main>
 <footer class="site-foot">
   <a href="https://www.instagram.com/_iamsiam_/" target="_blank" rel="noopener">INSTAGRAM</a>
@@ -513,8 +529,8 @@ async function archiveView() {
 function aboutView() {
   return { title: 'IAMSIAM LISTS · ABOUT', html: `
   <div class="about">
-    <p>IAMSIAM LISTS is a weekly collection of music recommendations, curated by friends and family of the IAMSIAM label.</p>
-    <p>Every week a different artist or friend of the label shares a top 10 of their liking. Listen here, and if something moves you, buy it. Every track links to the store that supports the artist most directly.</p>
+    <p>IAMSIAM LISTS is a collection of music recommendations, curated by friends and family of the IAMSIAM label.</p>
+    <p>Each list comes from a different artist or friend of the label - a top 10 of their liking. Listen here, and if something moves you, buy it. Every track links to the store that supports the artist most directly.</p>
     <p><a href="https://www.instagram.com/_iamsiam_/" target="_blank" rel="noopener">INSTAGRAM</a> · <a href="https://iamsiam.bandcamp.com" target="_blank" rel="noopener">BANDCAMP</a></p>
   </div>` };
 }
