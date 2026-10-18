@@ -3,3 +3,46 @@ node_modules/
 worker/.wrangler/
 audio-inbox/
 ig-work/
+
+# --- safe-backup defaults (keep secrets, deps, builds and media off GitHub) ---
+# secrets
+.env
+.env.*
+!.env*.example
+*.pem
+*.key
+*.p12
+*.pfx
+id_rsa*
+id_ed25519*
+.dev.vars
+.claude/settings.local.json
+# dependencies / environments
+node_modules/
+.venv/
+venv/
+__pycache__/
+*.pyc
+# build output
+dist/
+build/
+out/
+.next/
+*.tsbuildinfo
+# macOS
+.DS_Store
+# audio / video
+*.wav
+*.aif
+*.aiff
+*.mp3
+*.mp4
+*.mov
+*.flac
+*.m4a
+*.webm
+*.mkv
+*.avi
+# project-specific
+# the live site serves weekly audio from audio/, keep publishing it
+!audio/**/*.mp3
