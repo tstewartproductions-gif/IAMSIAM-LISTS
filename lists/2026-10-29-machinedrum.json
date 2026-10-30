@@ -1,0 +1,277 @@
+{
+  "curator": "machinedrum",
+  "listTitle": "haunted music 15",
+  "date": "2026-10-29",
+  "tracks": [
+    {
+      "rank": 1,
+      "artist": "Andy Stott",
+      "title": "Expecting",
+      "details": "modern love · 2012 · 7:55",
+      "art": "art/2026-10-29/01.jpg",
+      "stream": {
+        "type": "youtube",
+        "url": "https://www.youtube.com/watch?v=Rk2NEwU_R5w"
+      },
+      "buy": [
+        {
+          "platform": "beatport",
+          "url": "https://www.beatport.com/track/expecting/3893376"
+        }
+      ],
+      "envelope": "env/2026-10-29/01.json"
+    },
+    {
+      "rank": 2,
+      "artist": "Aphex Twin",
+      "title": "#21",
+      "details": "warp · 1994 · 7:09",
+      "art": "art/2026-10-29/02.jpg",
+      "stream": {
+        "type": "youtube",
+        "url": "https://www.youtube.com/watch?v=0vMvoMeLnOA"
+      },
+      "buy": [
+        {
+          "platform": "bandcamp",
+          "url": "https://aphextwin.bandcamp.com/track/21"
+        }
+      ],
+      "envelope": "env/2026-10-29/02.json"
+    },
+    {
+      "rank": 3,
+      "artist": "Boards of Canada",
+      "title": "Magic Window",
+      "details": "warp · 2002 · 1:46",
+      "art": "art/2026-10-29/03.jpg",
+      "stream": {
+        "type": "youtube",
+        "url": "https://www.youtube.com/watch?v=H1vcL4Gmdyo"
+      },
+      "buy": [
+        {
+          "platform": "bandcamp",
+          "url": "https://boardsofcanada.bandcamp.com/track/magic-window"
+        }
+      ],
+      "envelope": "env/2026-10-29/03.json"
+    },
+    {
+      "rank": 4,
+      "artist": "Cherrystones & Demdike Stare",
+      "title": "Prophet In View",
+      "details": "dds · 2025 · 3:27",
+      "art": "art/2026-10-29/04.jpg",
+      "stream": {
+        "type": "youtube",
+        "url": "https://www.youtube.com/watch?v=dfoqkNbCQ10"
+      },
+      "buy": [
+        {
+          "platform": "bandcamp",
+          "url": "https://dds-label.bandcamp.com/track/prophet-in-view"
+        }
+      ],
+      "envelope": "env/2026-10-29/04.json"
+    },
+    {
+      "rank": 5,
+      "artist": "EEL BLOOD",
+      "title": "Your Last Breath Can't Be Given",
+      "details": "venalism · 2025 · 3:29",
+      "art": "art/2026-10-29/05.jpg",
+      "stream": {
+        "type": "youtube",
+        "url": "https://www.youtube.com/watch?v=V00PpBwdIPI"
+      },
+      "buy": [
+        {
+          "platform": "bandcamp",
+          "url": "https://kavarimusic.bandcamp.com/track/your-last-breath-cant-be-given"
+        }
+      ],
+      "envelope": "env/2026-10-29/05.json"
+    },
+    {
+      "rank": 6,
+      "artist": "emptyset",
+      "title": "Stem",
+      "details": "thrill jockey · 2019 · 3:20",
+      "art": "art/2026-10-29/06.jpg",
+      "stream": {
+        "type": "youtube",
+        "url": "https://www.youtube.com/watch?v=52YtjluGLpY"
+      },
+      "buy": [
+        {
+          "platform": "bandcamp",
+          "url": "https://emptyset1.bandcamp.com/album/blossoms"
+        }
+      ],
+      "envelope": "env/2026-10-29/06.json"
+    },
+    {
+      "rank": 7,
+      "artist": "Ghost Dubs",
+      "title": "Cold Data",
+      "details": "pressure · 2026 · 6:20",
+      "art": "art/2026-10-29/07.jpg",
+      "stream": {
+        "type": "youtube",
+        "url": "https://www.youtube.com/watch?v=BWazLQaItIQ"
+      },
+      "buy": [
+        {
+          "platform": "bandcamp",
+          "url": "https://ghostdubs.bandcamp.com/track/cold-data"
+        }
+      ],
+      "envelope": "env/2026-10-29/07.json"
+    },
+    {
+      "rank": 8,
+      "artist": "Joe Colley & Jason Lescalleet",
+      "title": "Nervous Laughter",
+      "details": "korm plastics · 2006 · 10:00",
+      "art": "art/2026-10-29/08.jpg",
+      "stream": {
+        "type": "youtube",
+        "url": "https://www.youtube.com/watch?v=9CLFsbboR0c"
+      },
+      "buy": [
+        {
+          "platform": "boomkat",
+          "url": "https://boomkat.com/artists/joe-colley-jason-lescalleet/releases/fbm5luda/annihilate-this-week"
+        }
+      ],
+      "envelope": "env/2026-10-29/08.json"
+    },
+    {
+      "rank": 9,
+      "artist": "Lustmord",
+      "title": "Heresy Part 3",
+      "details": "soleilmoon · 1990 · 16:01",
+      "art": "art/2026-10-29/09.jpg",
+      "stream": {
+        "type": "youtube",
+        "url": "https://www.youtube.com/watch?v=pJj7An8conE"
+      },
+      "buy": [
+        {
+          "platform": "bandcamp",
+          "url": "https://lustmord.bandcamp.com/album/heresy"
+        }
+      ],
+      "envelope": "env/2026-10-29/09.json"
+    },
+    {
+      "rank": 10,
+      "artist": "Omar Hound",
+      "title": "ᚓᚐᚏᚈᚆᚒᚒᚑᚏᚎ",
+      "details": "world archive · 2024 · 2:45",
+      "art": "art/2026-10-29/10.jpg",
+      "stream": {
+        "type": "youtube",
+        "url": "https://www.youtube.com/watch?v=unc5Bywwj1Q"
+      },
+      "buy": [
+        {
+          "platform": "qobuz",
+          "url": "https://www.qobuz.com/us-en/album/archaeoacoustics-omar-hound/noe762xj21kob"
+        }
+      ],
+      "envelope": "env/2026-10-29/10.json"
+    },
+    {
+      "rank": 11,
+      "artist": "Phoenecia",
+      "title": "Hiccup",
+      "details": "schematic · 2001 · 4:12",
+      "art": "art/2026-10-29/11.jpg",
+      "stream": {
+        "type": "youtube",
+        "url": "https://www.youtube.com/watch?v=Ye0IwtDfmeQ"
+      },
+      "buy": [
+        {
+          "platform": "bandcamp",
+          "url": "https://phoenecia.bandcamp.com/track/hiccup"
+        }
+      ],
+      "envelope": "env/2026-10-29/11.json"
+    },
+    {
+      "rank": 12,
+      "artist": "Prurient",
+      "title": "Pretext",
+      "details": "hospital productions · 2008 · 4:43",
+      "art": "art/2026-10-29/12.jpg",
+      "stream": {
+        "type": "youtube",
+        "url": "https://www.youtube.com/watch?v=QRZWxg625gg"
+      },
+      "buy": [
+        {
+          "platform": "bandcamp",
+          "url": "https://prurient.bandcamp.com/album/cocaine-death"
+        }
+      ],
+      "envelope": "env/2026-10-29/12.json"
+    },
+    {
+      "rank": 13,
+      "artist": "Psychic TV",
+      "title": "Part VI",
+      "details": "some bizzare · 1982 · 1:42",
+      "art": "art/2026-10-29/13.jpg",
+      "stream": {
+        "type": "youtube",
+        "url": "https://www.youtube.com/watch?v=3EsHkCnLco0"
+      },
+      "buy": [
+        {
+          "platform": "bandcamp",
+          "url": "https://coldspring.bandcamp.com/track/themes-part-vi-recording-made-at-jonestown-guyana-at-the-time-of-the-suicides"
+        }
+      ],
+      "envelope": "env/2026-10-29/13.json"
+    },
+    {
+      "rank": 14,
+      "artist": "Robert Ashley",
+      "title": "Automatic Writing (1979)",
+      "details": "lovely music · 1979 · 46:00",
+      "art": "art/2026-10-29/14.jpg",
+      "stream": {
+        "type": "youtube",
+        "url": "https://www.youtube.com/watch?v=wwz56v1Ch7U"
+      },
+      "buy": [
+        {
+          "platform": "bandcamp",
+          "url": "https://robert-ashley.bandcamp.com/album/automatic-writing"
+        }
+      ],
+      "envelope": "env/2026-10-29/14.json"
+    },
+    {
+      "rank": 15,
+      "artist": "So",
+      "title": "Untitled - I",
+      "details": "thrill jockey · 2003 · 4:32",
+      "art": "art/2026-10-29/15.jpg",
+      "stream": {
+        "type": "youtube",
+        "url": "https://www.youtube.com/watch?v=i5MYpjzGT2E"
+      },
+      "buy": [
+        {
+          "platform": "thrill jockey",
+          "url": "https://www.thrilljockey.com/products/so-so"
+        }
+      ],
+      "envelope": "env/2026-10-29/15.json"
+    }
+  ]
+}
