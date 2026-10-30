@@ -203,18 +203,18 @@
     },
     {
       "rank": 12,
-      "artist": "Prurient",
-      "title": "Pretext",
-      "details": "hospital productions · 2008 · 4:43",
+      "artist": "Ak'chamel",
+      "title": "Sheela Na Gig Ceremony",
+      "details": "akuphone · 2024 · 2:13",
       "art": "art/2026-10-29/12.jpg",
       "stream": {
         "type": "youtube",
-        "url": "https://www.youtube.com/watch?v=QRZWxg625gg"
+        "url": "https://www.youtube.com/watch?v=CqF3pyg04rQ"
       },
       "buy": [
         {
           "platform": "bandcamp",
-          "url": "https://prurient.bandcamp.com/album/cocaine-death"
+          "url": "https://akuphone.bandcamp.com/track/sheela-na-gig-ceremony"
         }
       ],
       "envelope": "env/2026-10-29/12.json"
