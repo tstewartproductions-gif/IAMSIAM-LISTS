@@ -2,6 +2,10 @@
   "curator": "machinedrum",
   "listTitle": "haunted 15",
   "date": "2026-10-29",
+  "playlist": {
+    "platform": "youtube",
+    "url": "https://www.youtube.com/playlist?list=PLTtGdghVFLK4"
+  },
   "tracks": [
     {
       "rank": 1,

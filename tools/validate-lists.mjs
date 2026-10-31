@@ -45,6 +45,15 @@ export function validateList(list) {
   issue = textIssue(list?.listTitle, 'listTitle'); if (issue) errors.push(issue);
   issue = dateIssue(list?.date); if (issue) errors.push(issue);
 
+  // playlist: optional link to the whole list on a streaming platform (e.g. a
+  // public YouTube playlist for uninterrupted mobile listening). When present
+  // it needs a platform name + http(s) url, like a buy entry.
+  if (list?.playlist != null) {
+    const p = list.playlist;
+    const ok = typeof p === 'object' && !Array.isArray(p) && isText(p.platform) && isUrl(p.url);
+    if (!ok) errors.push('playlist must be { platform, url } with http(s) url');
+  }
+
   if (!Array.isArray(list?.tracks) || list.tracks.length === 0)
     errors.push('tracks must be a non-empty array');
   const tracks = Array.isArray(list?.tracks) ? list.tracks : [];

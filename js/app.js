@@ -43,11 +43,15 @@ function trackRow(t) {
 
 function listView(list) {
   if (!list || !Array.isArray(list.tracks)) throw new Error('malformed list');
+  const pl = list.playlist;
+  const plHref = pl ? safeUrl(pl.url) : '';
   let html = `
   <div class="list-head">
     <div class="curator">CURATED BY ${esc(list.curator)}</div>
     <h1>${esc(list.listTitle)}</h1>
     <div class="date">${esc(list.date)}</div>
+    ${plHref ? `<a class="playlist-link" href="${esc(plHref)}" target="_blank" rel="noopener">&#9654; LISTEN ON ${esc(pl.platform)}</a>
+    <div class="playlist-hint">FOR UNINTERRUPTED LISTENING ON MOBILE</div>` : ''}
   </div>`;
   let section = null;
   for (const t of list.tracks) {

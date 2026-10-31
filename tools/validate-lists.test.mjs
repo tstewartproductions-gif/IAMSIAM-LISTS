@@ -43,6 +43,16 @@ test('valid list passes with no errors', () => {
   assert.deepEqual(r.warnings, ['track 1: no artwork']);
 });
 
+test('valid playlist link passes', () => {
+  const l = { ...good(), playlist: { platform: 'youtube', url: 'https://www.youtube.com/playlist?list=PL123' } };
+  assert.deepEqual(validateList(l).errors, []);
+});
+
+test('playlist without a url is an error', () => {
+  const l = { ...good(), playlist: { platform: 'youtube' } };
+  assert.match(validateList(l).errors.join(' '), /playlist must be/);
+});
+
 test('missing artist is an error', () => {
   const l = good(); delete l.tracks[0].artist;
   assert.match(validateList(l).errors.join(' '), /track 1: missing artist/);
