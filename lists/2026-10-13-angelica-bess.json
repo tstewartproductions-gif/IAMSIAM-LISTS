@@ -2,6 +2,10 @@
   "curator": "angelica bess",
   "listTitle": "top 10 desert-island tracks",
   "date": "2026-10-13",
+  "playlist": {
+    "platform": "youtube",
+    "url": "https://www.youtube.com/playlist?list=PLA3oFc7l_cLI"
+  },
   "tracks": [
     {
       "rank": 1,

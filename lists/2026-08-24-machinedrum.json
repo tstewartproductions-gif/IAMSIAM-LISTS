@@ -2,6 +2,10 @@
   "curator": "machinedrum",
   "listTitle": "top 10 jungle collaborations",
   "date": "2026-08-24",
+  "playlist": {
+    "platform": "youtube",
+    "url": "https://www.youtube.com/playlist?list=PLCgjyPJvU5BI"
+  },
   "tracks": [
     {
       "rank": 1,

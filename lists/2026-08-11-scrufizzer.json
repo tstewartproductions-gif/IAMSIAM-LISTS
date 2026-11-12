@@ -2,6 +2,10 @@
   "curator": "scrufizzer",
   "listTitle": "top 5 grime instrumentals + top 5 grime verses of all time",
   "date": "2026-08-11",
+  "playlist": {
+    "platform": "youtube",
+    "url": "https://www.youtube.com/playlist?list=PLEtUREdj_Two"
+  },
   "tracks": [
     {
       "rank": 1,

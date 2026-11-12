@@ -2,6 +2,10 @@
   "curator": "starkey",
   "listTitle": "top 12 street bass anthems",
   "date": "2026-11-11",
+  "playlist": {
+    "platform": "youtube",
+    "url": "https://www.youtube.com/playlist?list=PLAzAYKgNzOWw"
+  },
   "tracks": [
     {
       "rank": 1,
