@@ -1,0 +1,223 @@
+{
+  "curator": "starkey",
+  "listTitle": "top 12 street bass anthems",
+  "date": "2026-11-11",
+  "tracks": [
+    {
+      "rank": 1,
+      "artist": "G3",
+      "title": "Who Doin the Drums",
+      "details": "slit jockey · 2020 · 3:29",
+      "art": "art/2026-11-11/01.jpg",
+      "stream": {
+        "type": "youtube",
+        "url": "https://www.youtube.com/watch?v=lsE8DN7PPXI"
+      },
+      "buy": [
+        {
+          "platform": "bandcamp",
+          "url": "https://slitjockeyrecords.bandcamp.com/track/who-doin-the-drums"
+        }
+      ],
+      "envelope": "env/2026-11-11/01.json"
+    },
+    {
+      "rank": 2,
+      "artist": "Starkey",
+      "title": "Philly Noise",
+      "details": "seclusiasis · 2015 · 3:53",
+      "art": "art/2026-11-11/02.jpg",
+      "stream": {
+        "type": "youtube",
+        "url": "https://www.youtube.com/watch?v=sB-FTNCgzFA"
+      },
+      "buy": [
+        {
+          "platform": "beatport",
+          "url": "https://www.beatport.com/track/philly-noise/4507748"
+        }
+      ],
+      "envelope": "env/2026-11-11/02.json"
+    },
+    {
+      "rank": 3,
+      "artist": "Dev79",
+      "title": "In Ya Face",
+      "details": "seclusiasis · 2008 · 3:27",
+      "art": "art/2026-11-11/03.jpg",
+      "stream": {
+        "type": "youtube",
+        "url": "https://www.youtube.com/watch?v=29L--ICBIbc"
+      },
+      "buy": [
+        {
+          "platform": "beatport",
+          "url": "https://www.beatport.com/track/in-ya-face/799577"
+        }
+      ],
+      "envelope": "env/2026-11-11/03.json"
+    },
+    {
+      "rank": 4,
+      "artist": "Starkey",
+      "title": "Tropical (DJ Pound Remix)",
+      "details": "saturate! · 2016 · 3:50",
+      "art": "art/2026-11-11/04.jpg",
+      "stream": {
+        "type": "youtube",
+        "url": "https://www.youtube.com/watch?v=RDsYYWSqiPc"
+      },
+      "buy": [
+        {
+          "platform": "bandcamp",
+          "url": "https://starkey.bandcamp.com/track/tropical-dj-pound-remix"
+        }
+      ],
+      "envelope": "env/2026-11-11/04.json"
+    },
+    {
+      "rank": 5,
+      "artist": "King",
+      "title": "Animal Calypso (VIP)",
+      "details": "seclusiasis · 2013 · 4:23",
+      "art": "art/2026-11-11/05.jpg",
+      "stream": {
+        "type": "youtube",
+        "url": "https://www.youtube.com/watch?v=h8dRK4SK8oQ"
+      },
+      "buy": [
+        {
+          "platform": "bandcamp",
+          "url": "https://seclusiasis.bandcamp.com/track/animal-calypso-vip"
+        }
+      ],
+      "envelope": "env/2026-11-11/05.json"
+    },
+    {
+      "rank": 6,
+      "artist": "Decibel",
+      "title": "Coke",
+      "details": "slit jockey · 2015 · 3:38",
+      "art": "art/2026-11-11/06.jpg",
+      "stream": {
+        "type": "youtube",
+        "url": "https://www.youtube.com/watch?v=I0zW7T5pQTA"
+      },
+      "buy": [
+        {
+          "platform": "beatport",
+          "url": "https://www.beatport.com/track/coke/6823632"
+        }
+      ],
+      "envelope": "env/2026-11-11/06.json"
+    },
+    {
+      "rank": 7,
+      "artist": "Stagga",
+      "title": "Wild for the Night (Doshy Remix)",
+      "details": "slit jockey · 2011 · 3:30",
+      "art": "art/2026-11-11/07.jpg",
+      "stream": {
+        "type": "youtube",
+        "url": "https://www.youtube.com/watch?v=N8shbjiZ83o"
+      },
+      "buy": [
+        {
+          "platform": "beatport",
+          "url": "https://www.beatport.com/track/wild-for-the-night/3024740"
+        }
+      ],
+      "envelope": "env/2026-11-11/07.json"
+    },
+    {
+      "rank": 8,
+      "artist": "Arthur Thomas & the Funkitorium",
+      "title": "How You Like Me Now (Starkey Remix)",
+      "details": "spring garden · 2021 · 4:55",
+      "art": "art/2026-11-11/08.jpg",
+      "stream": {
+        "type": "youtube",
+        "url": "https://www.youtube.com/watch?v=D9QL_QJzxrM"
+      },
+      "buy": [
+        {
+          "platform": "bandcamp",
+          "url": "https://springgardenrecords.bandcamp.com/track/how-you-like-me-now-starkey-remix"
+        }
+      ],
+      "envelope": "env/2026-11-11/08.json"
+    },
+    {
+      "rank": 9,
+      "artist": "Starkey",
+      "title": "Arsenal",
+      "details": "rwina · 2019 · 3:57",
+      "art": "art/2026-11-11/09.jpg",
+      "stream": {
+        "type": "youtube",
+        "url": "https://www.youtube.com/watch?v=sKbt_V_wciU"
+      },
+      "buy": [
+        {
+          "platform": "bandcamp",
+          "url": "https://rwinarecords.bandcamp.com/track/arsenal"
+        }
+      ],
+      "envelope": "env/2026-11-11/09.json"
+    },
+    {
+      "rank": 10,
+      "artist": "Dev79",
+      "title": "From the Get",
+      "details": "slit jockey · 2007 · 3:04",
+      "art": "art/2026-11-11/10.jpg",
+      "stream": {
+        "type": "youtube",
+        "url": "https://www.youtube.com/watch?v=5CFvJQUDE54"
+      },
+      "buy": [
+        {
+          "platform": "beatport",
+          "url": "https://www.beatport.com/track/from-the-get/354228"
+        }
+      ],
+      "envelope": "env/2026-11-11/10.json"
+    },
+    {
+      "rank": 11,
+      "artist": "The Golden Toyz",
+      "title": "Pinky Crazy",
+      "details": "seclusiasis · 2014 · 3:28",
+      "art": "art/2026-11-11/11.jpg",
+      "stream": {
+        "type": "youtube",
+        "url": "https://www.youtube.com/watch?v=EwV1Ac7xt7Q"
+      },
+      "buy": [
+        {
+          "platform": "beatport",
+          "url": "https://www.beatport.com/track/pinky-crazy/5678139"
+        }
+      ],
+      "envelope": "env/2026-11-11/11.json"
+    },
+    {
+      "rank": 12,
+      "artist": "DNAEBEATS",
+      "title": "Brasilian Bug Bite",
+      "details": "seclusiasis · 2011 · 1:54",
+      "art": "art/2026-11-11/12.jpg",
+      "stream": {
+        "type": "youtube",
+        "url": "https://www.youtube.com/watch?v=mZcqNQFfv2U"
+      },
+      "buy": [
+        {
+          "platform": "beatport",
+          "url": "https://www.beatport.com/track/brasilian-bug-bite/1974147"
+        }
+      ],
+      "envelope": "env/2026-11-11/12.json"
+    }
+  ]
+}
